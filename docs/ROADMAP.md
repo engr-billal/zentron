@@ -4,7 +4,7 @@
 > When a feature ships, move it from `pending` to `shipped` with a date.
 
 **Last updated:** 2026-05-27
-**Current phase:** Phase 1 — MVP v0.1
+**Current phase:** Phase 1 — MVP v0.1 · foundation (1.7) and auth (1.2) shipped, dashboards (1.3, 1.4, 1.5) next
 **Tech stack:** Next.js 16 (App Router) · TypeScript · Tailwind v4 · shadcn/ui · Supabase (planned) · Stripe Connect (planned)
 
 ---
@@ -55,17 +55,19 @@ The first thing prospects, brands, and creators can actually see and use.
 | Sitemap + robots.txt | `later` | `next-sitemap` or static |
 | Waitlist email capture | `next` | Stores email + role intent (brand/creator) in Supabase `waitlist` table |
 
-### 1.2 Auth & onboarding `later`
+### 1.2 Auth & onboarding `wip`
 
 | Feature | Status | Notes |
 |---|---|---|
-| Supabase project setup + env wiring | `later` | `lib/supabase/{client,server,middleware}.ts` |
-| Supabase Auth — email/password | `later` | Sign-in, sign-up, email verification |
-| Supabase Auth — Google OAuth | `later` | Single provider for v0.1 |
-| Role-select screen | `later` | After first sign-up: brand or creator |
-| Brand onboarding wizard | `later` | Company, website, industry, team size, logo, billing country |
-| Creator onboarding wizard | `later` | Handle, primary platform, niches, languages, base rate, country |
-| `middleware.ts` route gating | `later` | Auth → onboarding → app, mirroring accounting-os-fe pattern |
+| Supabase project setup + env wiring | `done` 2026-05-27 | Project `zentron` in `eu-west-2`, `@supabase/ssr` factories in `src/lib/supabase/{client,server,middleware,admin}.ts` |
+| Supabase Auth — email/password | `done` 2026-05-27 | Sign-in, sign-up, email verification via `/api/auth/callback` |
+| Supabase Auth — Google OAuth | `next` | Single provider, add as a second action on sign-in page |
+| Role-select screen | `done` 2026-05-27 | `/role-select` creates `brand_profiles` or `creator_profiles` row |
+| Brand onboarding wizard | `next` | Company, website, industry, team size, logo, billing country (currently auto-stub on role-select) |
+| Creator onboarding wizard | `next` | Handle, primary platform, niches, languages, base rate, country (currently auto-stub) |
+| `proxy.ts` route gating | `done` 2026-05-27 | `src/proxy.ts` (Next.js 16 renamed `middleware` → `proxy`) redirects unauth → /sign-in, no-role → /role-select |
+| Forgot password flow | `later` | – |
+| Email template customization | `later` | Custom SMTP (Resend) before public launch |
 
 ### 1.3 Brand dashboard `later`
 
@@ -101,13 +103,16 @@ The first thing prospects, brands, and creators can actually see and use.
 | Unit tests for scoring | `later` | Bands, multipliers, weights, suggested rate range |
 | Score breakdown component | `later` | Used by Creator dashboard + Brand discovery |
 
-### 1.7 DB schema + RLS `later`
+### 1.7 DB schema + RLS `done`
 
 | Feature | Status | Notes |
 |---|---|---|
-| `supabase/migrations/0001_init.sql` | `later` | `profiles`, `brand_profiles`, `creator_profiles`, `creator_platforms`, `creator_scores`, `briefs`, `brief_invitations` |
-| `supabase/migrations/0002_rls.sql` | `later` | Owner-only writes, public reads for creator profiles, service-role bypass for scoring |
-| Generated TS types via `supabase gen types` | `later` | `src/types/database.ts` |
+| Migration `init_schema` | `done` 2026-05-27 | 7 enums + 6 tables (`profiles`, `brand_profiles`, `creator_profiles`, `creator_platforms`, `briefs`, `brief_invitations`) + `set_updated_at` trigger + indexes |
+| Migration `init_rls` | `done` 2026-05-27 | All 6 tables RLS-enabled with role-aware policies |
+| Migration `profile_trigger` | `done` 2026-05-27 | `handle_new_user()` security-definer trigger on `auth.users` |
+| Migration `advisor_fixes` | `done` 2026-05-27 | Wrapped `auth.uid()` in `(select auth.uid())` across policies; locked `set_updated_at` search_path; covered `briefs.brand_id` FK with index |
+| Generated TS types | `done` 2026-05-27 | `src/types/database.ts` via `mcp.generate_typescript_types` |
+| `creator_scores` table | `later` | Lands with Phase 2 matching engine when scoring goes live |
 
 ---
 

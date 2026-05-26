@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "motion/react";
 import { ArrowUpRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -62,13 +63,13 @@ export function Hero() {
             className="mt-9 flex flex-wrap items-center gap-3"
           >
             <Button asChild size="lg" className="h-11 px-5">
-              <a href="#waitlist">
+              <Link href="/sign-up?role=brand">
                 Join as a brand
                 <ArrowUpRight className="size-4" />
-              </a>
+              </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="h-11 px-5">
-              <a href="#waitlist">Apply as a creator</a>
+              <Link href="/sign-up?role=creator">Apply as a creator</Link>
             </Button>
           </motion.div>
 

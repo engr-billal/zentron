@@ -90,7 +90,7 @@ src/
 ├── providers/             # Context providers (ACL, React Query, Google OAuth)
 ├── store/                 # Redux Toolkit store, root reducer, typed hooks
 ├── types/                 # Globally shared types
-└── middleware.ts          # Route gating (auth, onboarding, redirects)
+└── proxy.ts               # Route gating (auth, onboarding, redirects) — Next.js 16 "proxy" convention, formerly "middleware"
 ```
 
 ## Rules

@@ -36,7 +36,7 @@ src/
 ├── providers/                 # context providers
 ├── store/                     # Redux Toolkit
 ├── types/                     # cross-cutting types
-└── middleware.ts              # route gating (when auth lands)
+└── proxy.ts                   # route gating (Next.js 16 "proxy" convention, formerly "middleware")
 ```
 
 See [.cursor/rules/folder-structure.mdc](../.cursor/rules/folder-structure.mdc) for the full feature-folder convention.

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowUpRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -172,10 +173,10 @@ export function Pricing() {
               variant={plan.highlight ? "brand" : "outline"}
               className="mt-auto h-10 w-full justify-between"
             >
-              <a href="#waitlist">
+              <Link href="/sign-up">
                 {plan.cta}
                 <ArrowUpRight className="size-3.5" />
-              </a>
+              </Link>
             </Button>
           </div>
         ))}
