@@ -1,0 +1,104 @@
+---
+description: Frontend folder structure and file placement conventions for Zentron Solutions
+alwaysApply: true
+---
+
+# Frontend Folder Structure
+
+## Feature folder layout (under `src/app/(dashboard)/`)
+
+Every feature follows this structure:
+
+```
+feature-name/
+├── _api/                  # Raw API call functions (no hooks, no React)
+│   └── feature.api.ts
+├── _queries/              # React Query read hooks (useQuery)
+│   └── feature.queries.ts
+├── _mutations/            # React Query write hooks (useMutation)
+│   └── feature.mutations.ts
+├── _types/                # TypeScript types and interfaces
+│   └── feature.types.ts
+├── _components/           # UI components (one per file, no merging)
+│   ├── feature-header.tsx
+│   ├── feature-table.tsx
+│   └── feature-detail.tsx
+├── _utils/                # Pure helper functions (formatters, parsers)
+│   └── format.ts
+├── [id]/                  # Dynamic route for detail pages
+│   ├── page.tsx
+│   └── _components/       # Detail-specific components
+├── page.tsx               # Main list/landing page
+└── layout.tsx             # Optional layout wrapper
+```
+
+Example Zentron features that will follow this pattern:
+`briefs/`, `creators/`, `campaigns/`, `contracts/`, `escrow/`, `score/`, `disputes/`.
+
+## What goes where
+
+### `_api/` — Raw API functions
+- Plain async functions that call `api.get()`, `api.post()`, etc.
+- No React hooks, no `useQuery`, no `useMutation`
+- Returns typed responses
+- Example: `fetchBriefList(params)`, `createBrief(payload)`
+
+### `_queries/` — Read hooks
+- Only `useQuery` hooks
+- Import from `_api/` for the actual fetch functions
+- Handle query keys, enabled flags, placeholderData
+- Example: `useBriefList(filters)`, `useBriefDetail(id)`
+
+### `_mutations/` — Write hooks
+- Only `useMutation` hooks
+- Import from `_api/` for the actual mutation functions
+- Handle cache invalidation via `queryClient.invalidateQueries`
+- Example: `useCreateBrief()`, `useUpdateBrief(id)`
+
+### `_types/` — TypeScript types
+- Entity types matching backend response shape
+- Filter/query parameter types
+- List response types with pagination
+- No runtime code, only type definitions
+
+### `_components/` — UI components
+- One component per file, always
+- Never merge multiple components into a single file
+- Name files with the feature prefix: `brief-table.tsx`, not `table.tsx`
+- Local sub-components go in sub-folders: `_components/detail/`
+
+### `_utils/` — Pure helpers
+- Formatters: `formatDate`, `formatAmount`, `formatScoreBand`
+- Parsers, validators, mapping functions
+- No React, no hooks, no side effects
+
+## Global shared code
+
+```
+src/
+├── components/
+│   ├── ui/                # shadcn primitives (Input, Button, Dialog, Switch, etc.)
+│   ├── forms/             # Form helpers (FormField, FormSelect, SectionHeader, CountrySelect)
+│   ├── layout/            # App shell (sidebar, topbar)
+│   └── marketing/         # Public landing-page sections
+├── lib/
+│   ├── api.ts             # Axios instance
+│   ├── utils.ts           # cn() helper
+│   ├── types.ts           # Shared types (onboarding, auth, roles)
+│   └── permissions.ts     # Permission constants
+├── hooks/                 # Cross-feature React hooks (use-*.ts)
+├── providers/             # Context providers (ACL, React Query, Google OAuth)
+├── store/                 # Redux Toolkit store, root reducer, typed hooks
+├── types/                 # Globally shared types
+└── middleware.ts          # Route gating (auth, onboarding, redirects)
+```
+
+## Rules
+
+- Use shadcn `Input` and `Button` from `ui/` — never create parallel input/button components
+- Use `FormSelect` from `forms/` for native `<select>` with react-hook-form `register()`
+- Use shadcn `Dialog`, `Switch`, `Tabs` from `ui/` for complex interactions
+- Shared hooks that multiple features use go in `src/app/(dashboard)/_hooks/`
+- Never hardcode data that should come from an API (creators, niches, currencies, score weights)
+- Every `useMutation` must have `onError` handling
+- Destructive actions (delete, deactivate, cancel campaign) require confirmation before executing

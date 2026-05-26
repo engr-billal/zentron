@@ -1,0 +1,13 @@
+---
+description: Code comment standards
+globs: ["**/*.ts", "**/*.tsx"]
+---
+
+# Code Comment Rules
+
+- Do NOT add section dividers like `{/* Header */}`, `{/* Footer */}`, `{/* Vendor */}`, `{/* Status pill */}` etc.
+- Do NOT reference HTML wireframe files, design specs, or ticket numbers in code comments.
+- Do NOT add JSDoc-style block comments explaining obvious function behavior.
+- Only add comments when explaining non-obvious intent, trade-offs, workarounds, or constraints that cannot be understood from the code alone.
+- Keep comments minimal. If you feel the need for a comment, first consider renaming the variable or function instead.
+- Never show "permission denied" or "you don't have access" messages. If a user lacks permission for an action, simply don't render that action. The backend enforces access control; the frontend hides what's not available.

@@ -1,0 +1,17 @@
+---
+description: Build quality and verification standards
+globs: ["**/*.ts", "**/*.tsx"]
+---
+
+# Build Quality Rules
+
+- After making changes, always run lint checks on every modified file before considering work complete.
+- Never leave unused imports. Remove any import that is not referenced in the file.
+- Never introduce TypeScript errors. If a type changes, update all consumers.
+- When deleting a file, search the entire codebase for references to it and update or remove them.
+- When renaming a type, enum value, or export, find and update every usage across the project.
+- Do not use `keepPreviousData` for queries where tab/filter switching should show a fresh loading state.
+- Do not gate page rendering on client-side permission checks that race with auth loading. The backend enforces access; let API errors handle unauthorized access gracefully through the error state.
+- Verify that new components receive the correct prop types and that data shapes match between frontend types and backend DTOs.
+- When adding fields to a backend DTO, also add them to the corresponding frontend type and vice versa.
+- Test pagination, loading states, error states, and empty states — not just the happy path.
