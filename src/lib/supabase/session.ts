@@ -7,6 +7,7 @@ export type SessionContext = {
   response: NextResponse;
   user: { id: string; email: string | null } | null;
   role: UserRole | null;
+  onboarded: boolean;
 };
 
 export async function updateSession(
@@ -40,7 +41,7 @@ export async function updateSession(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { response, user: null, role: null };
+    return { response, user: null, role: null, onboarded: false };
   }
 
   const { data: profile } = await supabase
@@ -49,9 +50,31 @@ export async function updateSession(
     .eq("id", user.id)
     .maybeSingle();
 
+  const role = (profile?.role ?? null) as UserRole | null;
+
+  let onboarded = false;
+  if (role === "brand") {
+    const { data } = await supabase
+      .from("brand_profiles")
+      .select("id")
+      .eq("id", user.id)
+      .maybeSingle();
+    onboarded = !!data;
+  } else if (role === "creator") {
+    const { data } = await supabase
+      .from("creator_profiles")
+      .select("id")
+      .eq("id", user.id)
+      .maybeSingle();
+    onboarded = !!data;
+  } else if (role === "admin") {
+    onboarded = true;
+  }
+
   return {
     response,
     user: { id: user.id, email: user.email ?? null },
-    role: (profile?.role ?? null) as UserRole | null,
+    role,
+    onboarded,
   };
 }

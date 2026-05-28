@@ -268,6 +268,62 @@ export type Database = {
           },
         ]
       }
+      creator_scores: {
+        Row: {
+          algo_version: string
+          audience_size_band: Database["public"]["Enums"]["audience_size_band"]
+          computed_at: string
+          creator_id: string
+          currency: string
+          engagement_score: number
+          final_score: number
+          niche_multiplier: number
+          niche_score: number
+          platform_score: number
+          suggested_max_cents: number
+          suggested_min_cents: number
+          track_record_score: number
+        }
+        Insert: {
+          algo_version?: string
+          audience_size_band: Database["public"]["Enums"]["audience_size_band"]
+          computed_at?: string
+          creator_id: string
+          currency?: string
+          engagement_score: number
+          final_score: number
+          niche_multiplier: number
+          niche_score: number
+          platform_score: number
+          suggested_max_cents: number
+          suggested_min_cents: number
+          track_record_score: number
+        }
+        Update: {
+          algo_version?: string
+          audience_size_band?: Database["public"]["Enums"]["audience_size_band"]
+          computed_at?: string
+          creator_id?: string
+          currency?: string
+          engagement_score?: number
+          final_score?: number
+          niche_multiplier?: number
+          niche_score?: number
+          platform_score?: number
+          suggested_max_cents?: number
+          suggested_min_cents?: number
+          track_record_score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_scores_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: true
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null

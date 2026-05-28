@@ -57,14 +57,11 @@ export async function signIn(
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) return { error: error.message };
 
-  const { data } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", (await supabase.auth.getUser()).data.user!.id)
-    .maybeSingle();
+  const userId = (await supabase.auth.getUser()).data.user!.id;
+  const next = await nextStepAfterAuth(userId);
 
   revalidatePath("/", "layout");
-  redirect(data?.role ? "/dashboard" : "/role-select");
+  redirect(next);
 }
 
 export async function selectRole(
@@ -90,6 +87,8 @@ export async function selectRole(
 
   if (profileError) return { error: profileError.message };
 
+  // Brand still gets a stub profile until the brand onboarding wizard lands in
+  // the next slice. Creator goes straight to /onboarding/creator.
   if (parsed.data.role === "brand") {
     const { error } = await supabase.from("brand_profiles").insert({
       id: user.id,
@@ -99,18 +98,31 @@ export async function selectRole(
         "New brand",
     });
     if (error && error.code !== "23505") return { error: error.message };
-  } else {
-    const fallbackHandle =
-      user.email?.split("@")[0]?.replace(/[^a-z0-9_]/gi, "_").toLowerCase() ??
-      `creator_${user.id.slice(0, 6)}`;
-    const { error } = await supabase.from("creator_profiles").insert({
-      id: user.id,
-      handle: `${fallbackHandle}_${user.id.slice(0, 4)}`,
-      primary_platform: "instagram",
-    });
-    if (error && error.code !== "23505") return { error: error.message };
+    revalidatePath("/", "layout");
+    redirect("/dashboard");
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
+  redirect("/onboarding/creator");
+}
+
+async function nextStepAfterAuth(userId: string): Promise<string> {
+  const supabase = await createClient();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (!profile?.role) return "/role-select";
+
+  if (profile.role === "creator") {
+    const { data } = await supabase
+      .from("creator_profiles")
+      .select("id")
+      .eq("id", userId)
+      .maybeSingle();
+    return data ? "/dashboard" : "/onboarding/creator";
+  }
+  return "/dashboard";
 }

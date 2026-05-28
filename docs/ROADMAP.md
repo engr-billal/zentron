@@ -3,8 +3,8 @@
 > Single source of truth for what we're building, in what order, and what's done.
 > When a feature ships, move it from `pending` to `shipped` with a date.
 
-**Last updated:** 2026-05-27
-**Current phase:** Phase 1 — MVP v0.1 · foundation (1.7) and auth (1.2) shipped, dashboards (1.3, 1.4, 1.5) next
+**Last updated:** 2026-05-28
+**Current phase:** Phase 1 — MVP v0.1 · creator end-to-end shipped (1.2 + 1.4 + 1.6); brand dashboard (1.3) and discovery (1.5) next
 **Tech stack:** Next.js 16 (App Router) · TypeScript · Tailwind v4 · shadcn/ui · Supabase (planned) · Stripe Connect (planned)
 
 ---
@@ -59,15 +59,16 @@ The first thing prospects, brands, and creators can actually see and use.
 
 | Feature | Status | Notes |
 |---|---|---|
-| Supabase project setup + env wiring | `done` 2026-05-27 | Project `zentron` in `eu-west-2`, `@supabase/ssr` factories in `src/lib/supabase/{client,server,middleware,admin}.ts` |
+| Supabase project setup + env wiring | `done` 2026-05-27 | Project `zentron` in `eu-west-2`, `@supabase/ssr` factories in `src/lib/supabase/{client,server,session,admin}.ts` |
 | Supabase Auth — email/password | `done` 2026-05-27 | Sign-in, sign-up, email verification via `/api/auth/callback` |
 | Supabase Auth — Google OAuth | `next` | Single provider, add as a second action on sign-in page |
-| Role-select screen | `done` 2026-05-27 | `/role-select` creates `brand_profiles` or `creator_profiles` row |
+| Role-select screen | `done` 2026-05-27 | `/role-select` updates `profiles.role`; creator drops auto-stub and routes to wizard |
 | Brand onboarding wizard | `next` | Company, website, industry, team size, logo, billing country (currently auto-stub on role-select) |
-| Creator onboarding wizard | `next` | Handle, primary platform, niches, languages, base rate, country (currently auto-stub) |
-| `proxy.ts` route gating | `done` 2026-05-27 | `src/proxy.ts` (Next.js 16 renamed `middleware` → `proxy`) redirects unauth → /sign-in, no-role → /role-select |
+| Creator onboarding wizard | `done` 2026-05-28 | 3-step wizard at `/onboarding/creator`: Identity, Work, Platforms. Creates creator_profile + creator_platforms + creator_score atomically |
+| `proxy.ts` route gating | `done` 2026-05-28 | Redirects unauth → /sign-in, no-role → /role-select, role+!onboarded → /onboarding/<role>, onboarded users skip /onboarding |
 | Forgot password flow | `later` | – |
 | Email template customization | `later` | Custom SMTP (Resend) before public launch |
+| Leaked-password protection | `next` | Toggle on in Supabase Auth dashboard (advisor WARN; one click) |
 
 ### 1.3 Brand dashboard `later`
 
@@ -79,13 +80,15 @@ The first thing prospects, brands, and creators can actually see and use.
 | Brief detail view (read-only summary) | `later` | – |
 | Empty states + skeleton loaders | `later` | – |
 
-### 1.4 Creator dashboard `later`
+### 1.4 Creator dashboard `done`
 
 | Feature | Status | Notes |
 |---|---|---|
-| Profile editor | `later` | Bio, niches, languages, base rate |
-| Platforms manager | `later` | Add/edit handles + follower counts (manual entry for v0.1) |
-| Zentron Score panel (stub) | `later` | Uses pure functions in `lib/scoring/zentron-score.ts` |
+| Role-aware `/dashboard` shell | `done` 2026-05-28 | Branches to CreatorOverview or BrandOverview based on `profiles.role` |
+| Score card (slide 06 visual) | `done` 2026-05-28 | `src/app/dashboard/_components/score-card.tsx` shows final score + 5 weighted dimensions + fair-rate range |
+| Profile editor | `done` 2026-05-28 | `/dashboard/profile` — bio, niches, languages, country, primary platform, base rate. Recomputes score on save |
+| Platforms manager | `done` 2026-05-28 | `/dashboard/platforms` — inline add/edit/delete. Each mutation recomputes score |
+| Profile + Platforms summaries on overview | `done` 2026-05-28 | Quick-view cards on `/dashboard` with "Edit" / "Manage" links |
 
 ### 1.5 Brand-side creator discovery `later`
 
@@ -95,24 +98,28 @@ The first thing prospects, brands, and creators can actually see and use.
 | Match score badge (stub) | `later` | Static computation against brief targets |
 | Pagination + empty state | `later` | – |
 
-### 1.6 Foundational scoring `later`
+### 1.6 Foundational scoring `done`
 
 | Feature | Status | Notes |
 |---|---|---|
-| `lib/scoring/zentron-score.ts` — pure functions | `later` | See `docs/ZENTRON_SCORE.md` for spec |
-| Unit tests for scoring | `later` | Bands, multipliers, weights, suggested rate range |
-| Score breakdown component | `later` | Used by Creator dashboard + Brand discovery |
+| `src/lib/scoring/types.ts` | `done` 2026-05-28 | Niche, Platform, AudienceBand, ScoreInputs, ScoreResult, DIMENSION_WEIGHTS, ALGO_VERSION |
+| Pure functions: audience-band, engagement-score, niche-multiplier, platform-score, track-record | `done` 2026-05-28 | All zero-side-effect, return shaped results |
+| `zentron-score.ts` orchestrator | `done` 2026-05-28 | Weighted combination + suggested rate range computation |
+| `persist.ts` — recomputeAndSaveScore | `done` 2026-05-28 | Single source of truth for every score recompute (onboarding, profile edit, platform CRUD) |
+| Score breakdown component | `done` 2026-05-28 | `src/app/dashboard/_components/score-card.tsx` + `score-dimension-row.tsx` |
+| Unit tests | `later` | Deferred; vitest setup is the obvious next test slice |
 
 ### 1.7 DB schema + RLS `done`
 
 | Feature | Status | Notes |
 |---|---|---|
-| Migration `init_schema` | `done` 2026-05-27 | 7 enums + 6 tables (`profiles`, `brand_profiles`, `creator_profiles`, `creator_platforms`, `briefs`, `brief_invitations`) + `set_updated_at` trigger + indexes |
+| Migrations versioned in `supabase/migrations/` | `done` 2026-05-28 | All 5 files committed; `supabase migration list` shows local + remote in sync. File-first workflow going forward (no more MCP write-mode) |
+| Migration `init_schema` | `done` 2026-05-27 | 7 enums + 6 tables + `set_updated_at` trigger + indexes |
 | Migration `init_rls` | `done` 2026-05-27 | All 6 tables RLS-enabled with role-aware policies |
 | Migration `profile_trigger` | `done` 2026-05-27 | `handle_new_user()` security-definer trigger on `auth.users` |
-| Migration `advisor_fixes` | `done` 2026-05-27 | Wrapped `auth.uid()` in `(select auth.uid())` across policies; locked `set_updated_at` search_path; covered `briefs.brand_id` FK with index |
-| Generated TS types | `done` 2026-05-27 | `src/types/database.ts` via `mcp.generate_typescript_types` |
-| `creator_scores` table | `later` | Lands with Phase 2 matching engine when scoring goes live |
+| Migration `advisor_fixes` | `done` 2026-05-27 | Wrapped `auth.uid()` in `(select auth.uid())` across policies |
+| Migration `add_creator_scores` | `done` 2026-05-28 | 7th table for the moat; RLS public-read for discovery, owner-write |
+| Generated TS types | `done` 2026-05-28 | `src/types/database.ts` via MCP `generate_typescript_types` (read-only) |
 
 ---
 

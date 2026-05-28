@@ -32,5 +32,20 @@ export async function GET(request: NextRequest) {
     .eq("id", user.id)
     .maybeSingle();
 
-  return NextResponse.redirect(`${origin}${profile?.role ? "/dashboard" : next}`);
+  if (!profile?.role) {
+    return NextResponse.redirect(`${origin}${next}`);
+  }
+
+  if (profile.role === "creator") {
+    const { data: creator } = await supabase
+      .from("creator_profiles")
+      .select("id")
+      .eq("id", user.id)
+      .maybeSingle();
+    return NextResponse.redirect(
+      `${origin}${creator ? "/dashboard" : "/onboarding/creator"}`,
+    );
+  }
+
+  return NextResponse.redirect(`${origin}/dashboard`);
 }
