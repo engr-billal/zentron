@@ -4,7 +4,7 @@
 > When a feature ships, move it from `pending` to `shipped` with a date.
 
 **Last updated:** 2026-05-28
-**Current phase:** Phase 1 — MVP v0.1 · creator end-to-end shipped (1.2 + 1.4 + 1.6); brand dashboard (1.3) and discovery (1.5) next
+**Current phase:** Phase 1 — MVP v0.1 · brand end-to-end + full invitation loop shipped (1.2 + 1.3 + 1.5 done + 1.4 invitations). Next: dedicated `/discover` browse and Phase 2 matching engine.
 **Tech stack:** Next.js 16 (App Router) · TypeScript · Tailwind v4 · shadcn/ui · Supabase (planned) · Stripe Connect (planned)
 
 ---
@@ -63,22 +63,24 @@ The first thing prospects, brands, and creators can actually see and use.
 | Supabase Auth — email/password | `done` 2026-05-27 | Sign-in, sign-up, email verification via `/api/auth/callback` |
 | Supabase Auth — Google OAuth | `next` | Single provider, add as a second action on sign-in page |
 | Role-select screen | `done` 2026-05-27 | `/role-select` updates `profiles.role`; creator drops auto-stub and routes to wizard |
-| Brand onboarding wizard | `next` | Company, website, industry, team size, logo, billing country (currently auto-stub on role-select) |
+| Brand onboarding wizard | `done` 2026-05-28 | 3-step wizard at `/onboarding/brand`: Company, Targeting defaults, Billing. Persists default_niches/platforms/audience_bands to brand_profiles |
 | Creator onboarding wizard | `done` 2026-05-28 | 3-step wizard at `/onboarding/creator`: Identity, Work, Platforms. Creates creator_profile + creator_platforms + creator_score atomically |
 | `proxy.ts` route gating | `done` 2026-05-28 | Redirects unauth → /sign-in, no-role → /role-select, role+!onboarded → /onboarding/<role>, onboarded users skip /onboarding |
 | Forgot password flow | `later` | – |
 | Email template customization | `later` | Custom SMTP (Resend) before public launch |
 | Leaked-password protection | `next` | Toggle on in Supabase Auth dashboard (advisor WARN; one click) |
 
-### 1.3 Brand dashboard `later`
+### 1.3 Brand dashboard `done`
 
 | Feature | Status | Notes |
 |---|---|---|
-| App shell (sidebar + topbar) | `later` | `src/components/layout/` |
-| Briefs list page | `later` | `src/app/(dashboard)/briefs/page.tsx` |
-| Brief creation — multi-step form | `later` | Objective → audience → deliverables → budget → terms → review |
-| Brief detail view (read-only summary) | `later` | – |
-| Empty states + skeleton loaders | `later` | – |
+| Role-aware dashboard nav | `done` 2026-05-28 | Topbar with Briefs/Score/Profile/Platforms/Invitations switched by role |
+| Briefs list page with status filter | `done` 2026-05-28 | `/dashboard/briefs` — cards grid, Drafts/Open/Closed filter, empty state |
+| Brief creation — 5-step wizard | `done` 2026-05-28 | Basics → Audience → Deliverables → Budget → Terms |
+| Brief detail view (read-only summary) | `done` 2026-05-28 | `/dashboard/briefs/[id]` with status-aware actions (Edit/Publish/Close/Reopen/Delete) |
+| Brief edit (drafts only) | `done` 2026-05-28 | `/dashboard/briefs/[id]/edit` reuses wizard pre-filled |
+| Brand overview with stats | `done` 2026-05-28 | 4 stat cards (Drafts/Open/Closed/Invitations sent) + recent briefs grid |
+| Empty states | `done` 2026-05-28 | First-brief empty state on overview + list page |
 
 ### 1.4 Creator dashboard `done`
 
@@ -89,14 +91,19 @@ The first thing prospects, brands, and creators can actually see and use.
 | Profile editor | `done` 2026-05-28 | `/dashboard/profile` — bio, niches, languages, country, primary platform, base rate. Recomputes score on save |
 | Platforms manager | `done` 2026-05-28 | `/dashboard/platforms` — inline add/edit/delete. Each mutation recomputes score |
 | Profile + Platforms summaries on overview | `done` 2026-05-28 | Quick-view cards on `/dashboard` with "Edit" / "Manage" links |
+| Invitations inbox on overview | `done` 2026-05-28 | Top section shows N pending invitations as cards when present (hidden when empty) |
+| `/dashboard/invitations` full inbox | `done` 2026-05-28 | Pending/Accepted/Declined filter + detail at `/dashboard/invitations/[brief_id]` |
+| Accept/Decline/Withdraw actions | `done` 2026-05-28 | Server actions update `brief_invitations.status` + responded_at |
 
-### 1.5 Brand-side creator discovery `later`
+### 1.5 Brand-side creator discovery `done`
 
 | Feature | Status | Notes |
 |---|---|---|
-| Searchable, filterable creator list | `later` | Filters: niche, platform, country, follower band, score band |
-| Match score badge (stub) | `later` | Static computation against brief targets |
-| Pagination + empty state | `later` | – |
+| Match preview on brief detail | `done` 2026-05-28 | `src/lib/matching/` shortlists top-8 creators per brief with match score + reasons |
+| Match-score heuristic (v0) | `done` 2026-05-28 | 60% creator final_score + 20% niche match + 20% platform match, filtered by audience band |
+| Brand → creator invitations | `done` 2026-05-28 | Send/withdraw invite from brief detail page; writes brief_invitations row |
+| Dedicated /discover page (browse outside of a brief) | `later` | Lands when we have more breadth needs |
+| Real algorithmic matching engine | `later` | Phase 2 — same `shortlistForBrief` interface, real algo behind it |
 
 ### 1.6 Foundational scoring `done`
 
@@ -119,6 +126,8 @@ The first thing prospects, brands, and creators can actually see and use.
 | Migration `profile_trigger` | `done` 2026-05-27 | `handle_new_user()` security-definer trigger on `auth.users` |
 | Migration `advisor_fixes` | `done` 2026-05-27 | Wrapped `auth.uid()` in `(select auth.uid())` across policies |
 | Migration `add_creator_scores` | `done` 2026-05-28 | 7th table for the moat; RLS public-read for discovery, owner-write |
+| Migration `briefs_rls_include_invitees` | `done` 2026-05-28 | Creators can read briefs they've been invited to, even after status=closed |
+| Migration `brand_targeting_defaults` | `done` 2026-05-28 | `brand_profiles.default_niches/platforms/audience_bands` for wizard pre-fills |
 | Generated TS types | `done` 2026-05-28 | `src/types/database.ts` via MCP `generate_typescript_types` (read-only) |
 
 ---

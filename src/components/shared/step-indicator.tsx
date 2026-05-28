@@ -10,7 +10,7 @@ export function StepIndicator({
   labels: string[];
 }) {
   return (
-    <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.18em]">
+    <div className="flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.18em]">
       {Array.from({ length: total }).map((_, i) => {
         const active = i === step;
         const done = i < step;

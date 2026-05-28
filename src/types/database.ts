@@ -19,6 +19,9 @@ export type Database = {
           billing_country: string | null
           company_name: string
           created_at: string
+          default_audience_bands: Database["public"]["Enums"]["audience_size_band"][]
+          default_niches: string[]
+          default_platforms: string[]
           id: string
           industry: string | null
           logo_url: string | null
@@ -31,6 +34,9 @@ export type Database = {
           billing_country?: string | null
           company_name: string
           created_at?: string
+          default_audience_bands?: Database["public"]["Enums"]["audience_size_band"][]
+          default_niches?: string[]
+          default_platforms?: string[]
           id: string
           industry?: string | null
           logo_url?: string | null
@@ -43,6 +49,9 @@ export type Database = {
           billing_country?: string | null
           company_name?: string
           created_at?: string
+          default_audience_bands?: Database["public"]["Enums"]["audience_size_band"][]
+          default_niches?: string[]
+          default_platforms?: string[]
           id?: string
           industry?: string | null
           logo_url?: string | null

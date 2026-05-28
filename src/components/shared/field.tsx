@@ -38,3 +38,11 @@ export const selectClass =
 
 export const textareaClass =
   "min-h-[88px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50";
+
+export const chipClassActive =
+  "rounded-full bg-brand px-3 py-1 text-xs font-medium text-brand-foreground";
+export const chipClassInactive =
+  "rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground hover:border-brand/40";
+
+export const chipClassDarkActive =
+  "rounded-full bg-ink px-3 py-1 text-xs font-medium text-paper";

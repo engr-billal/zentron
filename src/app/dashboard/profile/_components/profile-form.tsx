@@ -8,7 +8,7 @@ import {
   Field,
   selectClass,
   textareaClass,
-} from "@/app/onboarding/creator/_components/form-field";
+} from "@/components/shared/field";
 import {
   CREATOR_PLATFORM_TYPES,
   COUNTRIES,

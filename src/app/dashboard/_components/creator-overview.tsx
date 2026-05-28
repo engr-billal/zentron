@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ScoreCard } from "./score-card";
 import { PlatformsSummary } from "./platforms-summary";
 import { ProfileSummary } from "./profile-summary";
+import { CreatorInvitations } from "./creator-invitations";
 
 export async function CreatorOverview({ userId }: { userId: string }) {
   const supabase = await createClient();
@@ -61,7 +62,11 @@ export async function CreatorOverview({ userId }: { userId: string }) {
         </Button>
       </div>
 
-      <div className="mt-10 flex flex-col gap-6">
+      <div className="mt-10">
+        <CreatorInvitations userId={userId} />
+      </div>
+
+      <div className="flex flex-col gap-6">
         {score ? (
           <ScoreCard score={score} />
         ) : (

@@ -8,7 +8,7 @@ import {
   NICHES,
   PLATFORM_LABELS,
 } from "@/lib/constants/creator";
-import { Field, selectClass } from "./form-field";
+import { Field, selectClass } from "@/components/shared/field";
 import type { CreatorWorkInput } from "@/lib/validations/creator";
 
 type Props = {

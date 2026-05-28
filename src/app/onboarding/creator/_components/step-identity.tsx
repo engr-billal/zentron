@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { COUNTRIES, LANGUAGES } from "@/lib/constants/creator";
-import { Field, selectClass, textareaClass } from "./form-field";
+import { Field, selectClass, textareaClass } from "@/components/shared/field";
 import type { CreatorIdentityInput } from "@/lib/validations/creator";
 
 type Props = {

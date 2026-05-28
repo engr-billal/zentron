@@ -47,5 +47,16 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  if (profile.role === "brand") {
+    const { data: brand } = await supabase
+      .from("brand_profiles")
+      .select("id")
+      .eq("id", user.id)
+      .maybeSingle();
+    return NextResponse.redirect(
+      `${origin}${brand ? "/dashboard" : "/onboarding/brand"}`,
+    );
+  }
+
   return NextResponse.redirect(`${origin}/dashboard`);
 }

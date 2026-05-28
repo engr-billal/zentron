@@ -10,7 +10,7 @@ import {
   type CreatorPlatformInput,
   type CreatorWorkInput,
 } from "@/lib/validations/creator";
-import { StepIndicator } from "./step-indicator";
+import { StepIndicator } from "@/components/shared/step-indicator";
 import { StepIdentity } from "./step-identity";
 import { StepWork } from "./step-work";
 import { StepPlatforms } from "./step-platforms";

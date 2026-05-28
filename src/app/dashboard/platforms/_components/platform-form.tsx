@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import {
   Field,
   selectClass,
-} from "@/app/onboarding/creator/_components/form-field";
+} from "@/components/shared/field";
 import {
   CREATOR_PLATFORM_TYPES,
   PLATFORM_LABELS,

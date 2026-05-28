@@ -116,7 +116,7 @@ Authored by a brand.
 | `brand_id` | uuid | FK |
 | `title` | text | – |
 | `objective` | text | Awareness, conversion, content licensing, etc. |
-| `target_audience` | jsonb | `{country[], age_range, interests[]}` |
+| `target_audience` | jsonb | `{countries: string[], age_min: number \| null, age_max: number \| null, audience_size_bands: AudienceBand[], interests: string[]}` |
 | `niche` | text | – |
 | `platforms` | text[] | – |
 | `deliverables` | jsonb | `[{type, count, specs}]` |

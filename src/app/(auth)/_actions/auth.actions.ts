@@ -87,23 +87,12 @@ export async function selectRole(
 
   if (profileError) return { error: profileError.message };
 
-  // Brand still gets a stub profile until the brand onboarding wizard lands in
-  // the next slice. Creator goes straight to /onboarding/creator.
-  if (parsed.data.role === "brand") {
-    const { error } = await supabase.from("brand_profiles").insert({
-      id: user.id,
-      company_name:
-        (user.user_metadata?.display_name as string | undefined) ??
-        user.email?.split("@")[0] ??
-        "New brand",
-    });
-    if (error && error.code !== "23505") return { error: error.message };
-    revalidatePath("/", "layout");
-    redirect("/dashboard");
-  }
-
+  // brand_profiles and creator_profiles rows are inserted by the respective
+  // onboarding wizards, not here.
   revalidatePath("/", "layout");
-  redirect("/onboarding/creator");
+  redirect(
+    parsed.data.role === "brand" ? "/onboarding/brand" : "/onboarding/creator",
+  );
 }
 
 async function nextStepAfterAuth(userId: string): Promise<string> {
@@ -123,6 +112,14 @@ async function nextStepAfterAuth(userId: string): Promise<string> {
       .eq("id", userId)
       .maybeSingle();
     return data ? "/dashboard" : "/onboarding/creator";
+  }
+  if (profile.role === "brand") {
+    const { data } = await supabase
+      .from("brand_profiles")
+      .select("id")
+      .eq("id", userId)
+      .maybeSingle();
+    return data ? "/dashboard" : "/onboarding/brand";
   }
   return "/dashboard";
 }
