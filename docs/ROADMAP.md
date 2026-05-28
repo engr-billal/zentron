@@ -4,7 +4,7 @@
 > When a feature ships, move it from `pending` to `shipped` with a date.
 
 **Last updated:** 2026-05-28
-**Current phase:** Phase 1 — MVP v0.1 · brand end-to-end + full invitation loop shipped (1.2 + 1.3 + 1.5 done + 1.4 invitations). Next: dedicated `/discover` browse and Phase 2 matching engine.
+**Current phase:** Phase 3 shipped (smart contracts + milestone schedule, 2-sided in-platform signing). Next: Phase 4 escrow (Stripe Connect + milestone status updates + payment release).
 **Tech stack:** Next.js 16 (App Router) · TypeScript · Tailwind v4 · shadcn/ui · Supabase (planned) · Stripe Connect (planned)
 
 ---
@@ -128,6 +128,8 @@ The first thing prospects, brands, and creators can actually see and use.
 | Migration `add_creator_scores` | `done` 2026-05-28 | 7th table for the moat; RLS public-read for discovery, owner-write |
 | Migration `briefs_rls_include_invitees` | `done` 2026-05-28 | Creators can read briefs they've been invited to, even after status=closed |
 | Migration `brand_targeting_defaults` | `done` 2026-05-28 | `brand_profiles.default_niches/platforms/audience_bands` for wizard pre-fills |
+| Migration `add_contracts_and_milestones` | `done` 2026-05-28 | Phase 3 schema: `contracts` + `milestones` + 2 enums + RLS |
+| Migration `milestones_split_write_policies` | `done` 2026-05-28 | Advisor fix: separate INSERT/UPDATE/DELETE so SELECT only evaluates one policy |
 | Generated TS types | `done` 2026-05-28 | `src/types/database.ts` via MCP `generate_typescript_types` (read-only) |
 
 ---
@@ -149,12 +151,24 @@ Real algorithm replacing the v0.1 stubs.
 
 ---
 
-## Phase 3 — Smart contracts `later`
+## Phase 3 — Smart contracts `done`
 
 Standardized digital agreements, signed in-platform.
 
 | Feature | Status | Notes |
 |---|---|---|
+| Contracts table + RLS | `done` 2026-05-28 | `contract_status` enum (draft/pending_creator/active/declined/cancelled/completed), party-only SELECT, brand-only INSERT, draft-only milestone writes |
+| Milestones table + RLS | `done` 2026-05-28 | `milestone_status` enum (pending/submitted/approved/rejected/released), gated through contract; status updates beyond `pending` land with Phase 4 escrow |
+| 4-step contract wizard | `done` 2026-05-28 | Scope → Schedule → Milestones (live sum check) → Terms; "Split evenly" helper |
+| Brand sends contract from brief detail | `done` 2026-05-28 | `Send contract` per opted-in invitation; pre-fills wizard with brief data |
+| Brand-side status actions | `done` 2026-05-28 | Edit/Send/Delete (draft), Withdraw (pending), Mark complete/Cancel (active) |
+| Creator-side sign + decline | `done` 2026-05-28 | Pending contracts surface on creator overview; Sign promotes status to active |
+| Cancel from either side | `done` 2026-05-28 | Pending or active contracts; optional reason captured |
+| /dashboard/contracts list | `done` 2026-05-28 | Role-aware list with 7-status filter; ContractCard shared by both sides |
+| Detail page + milestone breakdown | `done` 2026-05-28 | Read-only summary + role-specific action sidebar + milestone list |
+| PDF export of signed contract | `later` | – |
+| Real e-signature integration (DocuSign etc.) | `later` | – |
+| Counter-offers from creator | `later` | – |
 | Contract template builder | `later` | Scope, deliverables, exclusivity, usage rights, fees |
 | Digital signing (e-signature stub or DocuSign) | `later` | Audit log per signature |
 | Contract storage + versioning | `later` | Immutable record, downloadable PDF |

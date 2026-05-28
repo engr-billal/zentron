@@ -9,7 +9,7 @@ const RECENT_BRIEFS_LIMIT = 6;
 export async function BrandOverview({ userId }: { userId: string }) {
   const supabase = await createClient();
 
-  const [{ data: brand }, { data: briefs }, { count: draftsCount }, { count: openCount }, { count: closedCount }, { count: invitationsSent }] =
+  const [{ data: brand }, { data: briefs }, { count: draftsCount }, { count: openCount }, { count: closedCount }, { count: invitationsSent }, { count: activeContracts }] =
     await Promise.all([
       supabase
         .from("brand_profiles")
@@ -44,6 +44,11 @@ export async function BrandOverview({ userId }: { userId: string }) {
           head: true,
         })
         .eq("briefs.brand_id", userId),
+      supabase
+        .from("contracts")
+        .select("*", { count: "exact", head: true })
+        .eq("brand_id", userId)
+        .eq("status", "active"),
     ]);
 
   const hasBriefs = (briefs?.length ?? 0) > 0;
@@ -73,11 +78,12 @@ export async function BrandOverview({ userId }: { userId: string }) {
         </Button>
       </div>
 
-      <dl className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <dl className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         <StatCard label="Drafts" value={draftsCount ?? 0} />
         <StatCard label="Open" value={openCount ?? 0} highlight />
         <StatCard label="Closed" value={closedCount ?? 0} />
         <StatCard label="Invitations sent" value={invitationsSent ?? 0} />
+        <StatCard label="Active contracts" value={activeContracts ?? 0} />
       </dl>
 
       <div className="mt-12">

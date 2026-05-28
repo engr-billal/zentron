@@ -183,6 +183,94 @@ export type Database = {
           },
         ]
       }
+      contracts: {
+        Row: {
+          brand_id: string
+          brief_id: string
+          cancelled_at: string | null
+          cancelled_reason: string | null
+          created_at: string
+          creator_id: string
+          currency: string
+          end_date: string | null
+          exclusivity: string | null
+          id: string
+          scope: string
+          signed_brand_at: string | null
+          signed_creator_at: string | null
+          start_date: string | null
+          status: Database["public"]["Enums"]["contract_status"]
+          title: string
+          total_fee_cents: number
+          updated_at: string
+          usage_rights: string | null
+        }
+        Insert: {
+          brand_id: string
+          brief_id: string
+          cancelled_at?: string | null
+          cancelled_reason?: string | null
+          created_at?: string
+          creator_id: string
+          currency?: string
+          end_date?: string | null
+          exclusivity?: string | null
+          id?: string
+          scope: string
+          signed_brand_at?: string | null
+          signed_creator_at?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["contract_status"]
+          title: string
+          total_fee_cents: number
+          updated_at?: string
+          usage_rights?: string | null
+        }
+        Update: {
+          brand_id?: string
+          brief_id?: string
+          cancelled_at?: string | null
+          cancelled_reason?: string | null
+          created_at?: string
+          creator_id?: string
+          currency?: string
+          end_date?: string | null
+          exclusivity?: string | null
+          id?: string
+          scope?: string
+          signed_brand_at?: string | null
+          signed_creator_at?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["contract_status"]
+          title?: string
+          total_fee_cents?: number
+          updated_at?: string
+          usage_rights?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contracts_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brand_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contracts_brief_id_fkey"
+            columns: ["brief_id"]
+            isOneToOne: false
+            referencedRelation: "briefs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contracts_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       creator_platforms: {
         Row: {
           audience_health_score: number
@@ -333,6 +421,62 @@ export type Database = {
           },
         ]
       }
+      milestones: {
+        Row: {
+          amount_cents: number
+          approved_at: string | null
+          contract_id: string
+          created_at: string
+          description: string | null
+          due_at: string | null
+          id: string
+          released_at: string | null
+          sequence: number
+          status: Database["public"]["Enums"]["milestone_status"]
+          submitted_at: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          approved_at?: string | null
+          contract_id: string
+          created_at?: string
+          description?: string | null
+          due_at?: string | null
+          id?: string
+          released_at?: string | null
+          sequence: number
+          status?: Database["public"]["Enums"]["milestone_status"]
+          submitted_at?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          approved_at?: string | null
+          contract_id?: string
+          created_at?: string
+          description?: string | null
+          due_at?: string | null
+          id?: string
+          released_at?: string | null
+          sequence?: number
+          status?: Database["public"]["Enums"]["milestone_status"]
+          submitted_at?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "milestones_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -373,6 +517,13 @@ export type Database = {
     Enums: {
       audience_size_band: "nano" | "micro" | "mid" | "macro" | "mega"
       brief_status: "draft" | "open" | "closed"
+      contract_status:
+        | "draft"
+        | "pending_creator"
+        | "active"
+        | "declined"
+        | "cancelled"
+        | "completed"
       creator_platform_type:
         | "instagram"
         | "youtube"
@@ -381,6 +532,12 @@ export type Database = {
         | "twitter"
         | "linkedin"
       invitation_status: "invited" | "opted_in" | "declined" | "expired"
+      milestone_status:
+        | "pending"
+        | "submitted"
+        | "approved"
+        | "rejected"
+        | "released"
       subscription_tier: "free" | "scale"
       team_size: "1-10" | "11-50" | "51-200" | "200+"
       user_role: "brand" | "creator" | "admin"
@@ -513,6 +670,14 @@ export const Constants = {
     Enums: {
       audience_size_band: ["nano", "micro", "mid", "macro", "mega"],
       brief_status: ["draft", "open", "closed"],
+      contract_status: [
+        "draft",
+        "pending_creator",
+        "active",
+        "declined",
+        "cancelled",
+        "completed",
+      ],
       creator_platform_type: [
         "instagram",
         "youtube",
@@ -522,6 +687,13 @@ export const Constants = {
         "linkedin",
       ],
       invitation_status: ["invited", "opted_in", "declined", "expired"],
+      milestone_status: [
+        "pending",
+        "submitted",
+        "approved",
+        "rejected",
+        "released",
+      ],
       subscription_tier: ["free", "scale"],
       team_size: ["1-10", "11-50", "51-200", "200+"],
       user_role: ["brand", "creator", "admin"],

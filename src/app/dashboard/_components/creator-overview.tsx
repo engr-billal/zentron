@@ -6,6 +6,7 @@ import { ScoreCard } from "./score-card";
 import { PlatformsSummary } from "./platforms-summary";
 import { ProfileSummary } from "./profile-summary";
 import { CreatorInvitations } from "./creator-invitations";
+import { CreatorPendingContracts } from "./creator-pending-contracts";
 
 export async function CreatorOverview({ userId }: { userId: string }) {
   const supabase = await createClient();
@@ -63,6 +64,7 @@ export async function CreatorOverview({ userId }: { userId: string }) {
       </div>
 
       <div className="mt-10">
+        <CreatorPendingContracts userId={userId} />
         <CreatorInvitations userId={userId} />
       </div>
 

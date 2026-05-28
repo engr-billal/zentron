@@ -140,7 +140,7 @@ Joins `brief` ↔ `creator_profile` after the matching algorithm runs.
 | `invited_at` | timestamptz | – |
 | `responded_at` | timestamptz | – |
 
-### `contract` (Phase 3)
+### `contract` (Phase 3 · shipped 2026-05-28)
 
 Created when both parties sign.
 
@@ -153,22 +153,28 @@ Created when both parties sign.
 | `scope` | text | – |
 | `exclusivity` | text | – |
 | `usage_rights` | text | – |
-| `status` | enum | `draft` \| `sent` \| `signed` \| `active` \| `completed` \| `cancelled` |
-| `signed_brand_at` | timestamptz | – |
-| `signed_creator_at` | timestamptz | – |
+| `status` | enum | `draft` \| `pending_creator` \| `active` \| `declined` \| `cancelled` \| `completed` |
+| `signed_brand_at` | timestamptz | Set when brand sends the contract |
+| `signed_creator_at` | timestamptz | Set when creator signs to accept |
+| `start_date` | date | Optional |
+| `end_date` | date | Optional |
+| `cancelled_at` | timestamptz | – |
+| `cancelled_reason` | text | – |
 
-### `milestone` (Phase 4)
+### `milestone` (Phase 3 schema · status updates land in Phase 4)
 
-Per-contract release unit.
+Per-contract release unit. Currently all milestones stay at `pending` until Phase 4 escrow wires submit/approve/reject/release.
 
 | Field | Type | Notes |
 |---|---|---|
 | `contract_id` | uuid | – |
-| `sequence` | int | Order within contract |
+| `sequence` | int | Order within contract; unique per contract |
 | `title` | text | – |
-| `amount_cents` | int | – |
-| `due_at` | timestamptz | – |
+| `description` | text | Optional |
+| `amount_cents` | int | Sum across milestones must equal `contract.total_fee_cents` (enforced at create/edit) |
+| `due_at` | date | Optional |
 | `status` | enum | `pending` \| `submitted` \| `approved` \| `rejected` \| `released` |
+| `submitted_at` / `approved_at` / `released_at` | timestamptz | Set by Phase 4 actions |
 
 ### `escrow_hold` (Phase 4)
 

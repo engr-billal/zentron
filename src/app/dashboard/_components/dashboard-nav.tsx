@@ -12,6 +12,11 @@ const BRAND_LINKS = [
     label: "Briefs",
     match: (p: string) => p.startsWith("/dashboard/briefs"),
   },
+  {
+    href: "/dashboard/contracts",
+    label: "Contracts",
+    match: (p: string) => p.startsWith("/dashboard/contracts"),
+  },
 ] as const;
 
 const CREATOR_LINKS = [
@@ -20,6 +25,11 @@ const CREATOR_LINKS = [
     href: "/dashboard/invitations",
     label: "Invitations",
     match: (p: string) => p.startsWith("/dashboard/invitations"),
+  },
+  {
+    href: "/dashboard/contracts",
+    label: "Contracts",
+    match: (p: string) => p.startsWith("/dashboard/contracts"),
   },
   {
     href: "/dashboard/profile",
