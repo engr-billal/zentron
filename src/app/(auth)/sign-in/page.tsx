@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { AuthCard } from "../_components/auth-card";
+import { AuthDivider } from "../_components/auth-divider";
 import { EmailPasswordForm } from "../_components/email-password-form";
+import { GoogleAuthButton } from "../_components/google-auth-button";
 import { signIn } from "../_actions/auth.actions";
 
 export const metadata = { title: "Sign in" };
@@ -17,11 +19,21 @@ export default function SignInPage() {
         }
         description="Pick up where you left off — briefs, scores, campaigns."
       >
+        <GoogleAuthButton label="Continue with Google" />
+        <AuthDivider />
         <EmailPasswordForm
           action={signIn}
           submitLabel="Sign in"
           pendingLabel="Signing in..."
         />
+        <p className="mt-4 text-center text-xs text-muted-foreground">
+          <Link
+            href="/forgot-password"
+            className="underline-offset-4 hover:text-ink hover:underline"
+          >
+            Forgot password?
+          </Link>
+        </p>
       </AuthCard>
       <p className="mt-6 text-center text-sm text-muted-foreground">
         No account yet?{" "}

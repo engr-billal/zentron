@@ -5,26 +5,26 @@ const sections = [
   {
     label: "Product",
     links: [
-      { label: "How it works", href: "#how" },
-      { label: "Zentron Score", href: "#score" },
-      { label: "Escrow", href: "#escrow" },
-      { label: "Pricing", href: "#pricing" },
+      { label: "For brands", href: "/for-brands" },
+      { label: "For creators", href: "/for-creators" },
+      { label: "Pricing", href: "/pricing" },
+      { label: "How it works", href: "/#how" },
     ],
   },
   {
     label: "Company",
     links: [
-      { label: "Vision", href: "#vision" },
-      { label: "Pitch deck", href: "#" },
-      { label: "Contact", href: "mailto:usman@zentronsolutions.com" },
+      { label: "About", href: "/about" },
+      { label: "Contact", href: "/contact" },
+      { label: "Vision", href: "/#vision" },
     ],
   },
   {
     label: "Legal",
     links: [
-      { label: "Privacy", href: "#" },
-      { label: "Terms", href: "#" },
-      { label: "Cookies", href: "#" },
+      { label: "Privacy", href: "/legal/privacy" },
+      { label: "Terms", href: "/legal/terms" },
+      { label: "Cookies", href: "/legal/cookies" },
     ],
   },
 ];

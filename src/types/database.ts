@@ -183,6 +183,47 @@ export type Database = {
           },
         ]
       }
+      contract_reviews: {
+        Row: {
+          body: string | null
+          contract_id: string
+          created_at: string
+          id: string
+          rating: number
+          reviewee_id: string
+          reviewer_id: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string | null
+          contract_id: string
+          created_at?: string
+          id?: string
+          rating: number
+          reviewee_id: string
+          reviewer_id: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string | null
+          contract_id?: string
+          created_at?: string
+          id?: string
+          rating?: number
+          reviewee_id?: string
+          reviewer_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_reviews_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contracts: {
         Row: {
           brand_id: string
@@ -430,9 +471,12 @@ export type Database = {
           description: string | null
           due_at: string | null
           id: string
+          rejection_reason: string | null
           released_at: string | null
           sequence: number
           status: Database["public"]["Enums"]["milestone_status"]
+          submission_notes: string | null
+          submission_urls: string[]
           submitted_at: string | null
           title: string
           updated_at: string
@@ -445,9 +489,12 @@ export type Database = {
           description?: string | null
           due_at?: string | null
           id?: string
+          rejection_reason?: string | null
           released_at?: string | null
           sequence: number
           status?: Database["public"]["Enums"]["milestone_status"]
+          submission_notes?: string | null
+          submission_urls?: string[]
           submitted_at?: string | null
           title: string
           updated_at?: string
@@ -460,9 +507,12 @@ export type Database = {
           description?: string | null
           due_at?: string | null
           id?: string
+          rejection_reason?: string | null
           released_at?: string | null
           sequence?: number
           status?: Database["public"]["Enums"]["milestone_status"]
+          submission_notes?: string | null
+          submission_urls?: string[]
           submitted_at?: string | null
           title?: string
           updated_at?: string
@@ -507,6 +557,30 @@ export type Database = {
         }
         Relationships: []
       }
+      waitlist: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          role_intent: Database["public"]["Enums"]["waitlist_role_intent"]
+          source: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          role_intent?: Database["public"]["Enums"]["waitlist_role_intent"]
+          source?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          role_intent?: Database["public"]["Enums"]["waitlist_role_intent"]
+          source?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -541,6 +615,7 @@ export type Database = {
       subscription_tier: "free" | "scale"
       team_size: "1-10" | "11-50" | "51-200" | "200+"
       user_role: "brand" | "creator" | "admin"
+      waitlist_role_intent: "brand" | "creator" | "either"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -697,6 +772,7 @@ export const Constants = {
       subscription_tier: ["free", "scale"],
       team_size: ["1-10", "11-50", "51-200", "200+"],
       user_role: ["brand", "creator", "admin"],
+      waitlist_role_intent: ["brand", "creator", "either"],
     },
   },
 } as const

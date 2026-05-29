@@ -14,9 +14,9 @@ export function StepBilling({ value, errors, onChange }: Props) {
   return (
     <div className="flex flex-col gap-5">
       <Field
-        label="Billing country"
+        label="Invoice country"
         htmlFor="billing_country"
-        hint="Used for invoices, VAT, and Stripe later. Change anytime in settings."
+        hint="Used for invoices and tax region. You can change this anytime in settings."
         error={errors.billing_country}
       >
         <select

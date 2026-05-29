@@ -4,8 +4,8 @@
 > When a feature ships, move it from `pending` to `shipped` with a date.
 
 **Last updated:** 2026-05-28
-**Current phase:** Phase 3 shipped (smart contracts + milestone schedule, 2-sided in-platform signing). Next: Phase 4 escrow (Stripe Connect + milestone status updates + payment release).
-**Tech stack:** Next.js 16 (App Router) · TypeScript · Tailwind v4 · shadcn/ui · Supabase (planned) · Stripe Connect (planned)
+**Current phase:** Phase 4a shipped (payment-free milestone lifecycle, campaigns view, settings, Google OAuth, waitlist, reviews, legal pages). Next: Phase 4b escrow (Stripe Connect — explicitly deferred for now).
+**Tech stack:** Next.js 16 (App Router) · TypeScript · Tailwind v4 · shadcn/ui · Supabase · Stripe Connect (deferred to Phase 4b)
 
 ---
 
@@ -50,10 +50,10 @@ The first thing prospects, brands, and creators can actually see and use.
 | Pricing page (3 plans) | `done` 2026-05-26 | 8% commission · $499 Scale · à la carte |
 | Vision timeline (Y1/Y3/Y5 + TAM/SAM/SOM/CAGR) | `done` 2026-05-26 | – |
 | Marketing-only sub-pages | `next` | `/for-creators`, `/for-brands`, `/pricing`, `/about`, `/contact` |
-| `/legal/{privacy,terms,cookies}` pages | `later` | Required before public launch |
+| `/legal/{privacy,terms,cookies}` pages | `done` 2026-05-28 | Placeholder copy at `/legal/privacy`, `/legal/terms`, `/legal/cookies` (ready for legal review) |
 | Open-graph + Twitter card images | `later` | Generated `og:image` route handler |
 | Sitemap + robots.txt | `later` | `next-sitemap` or static |
-| Waitlist email capture | `next` | Stores email + role intent (brand/creator) in Supabase `waitlist` table |
+| Waitlist email capture | `done` 2026-05-28 | `waitlist` table with anon insert RLS; capture form on landing CTA + `/contact` |
 
 ### 1.2 Auth & onboarding `wip`
 
@@ -61,12 +61,12 @@ The first thing prospects, brands, and creators can actually see and use.
 |---|---|---|
 | Supabase project setup + env wiring | `done` 2026-05-27 | Project `zentron` in `eu-west-2`, `@supabase/ssr` factories in `src/lib/supabase/{client,server,session,admin}.ts` |
 | Supabase Auth — email/password | `done` 2026-05-27 | Sign-in, sign-up, email verification via `/api/auth/callback` |
-| Supabase Auth — Google OAuth | `next` | Single provider, add as a second action on sign-in page |
+| Supabase Auth — Google OAuth | `done` 2026-05-28 | `signInWithGoogle` server action + button on sign-in/sign-up |
 | Role-select screen | `done` 2026-05-27 | `/role-select` updates `profiles.role`; creator drops auto-stub and routes to wizard |
 | Brand onboarding wizard | `done` 2026-05-28 | 3-step wizard at `/onboarding/brand`: Company, Targeting defaults, Billing. Persists default_niches/platforms/audience_bands to brand_profiles |
 | Creator onboarding wizard | `done` 2026-05-28 | 3-step wizard at `/onboarding/creator`: Identity, Work, Platforms. Creates creator_profile + creator_platforms + creator_score atomically |
 | `proxy.ts` route gating | `done` 2026-05-28 | Redirects unauth → /sign-in, no-role → /role-select, role+!onboarded → /onboarding/<role>, onboarded users skip /onboarding |
-| Forgot password flow | `later` | – |
+| Forgot password flow | `done` 2026-05-28 | `/forgot-password` triggers Supabase reset email; `/reset-password` page sets new password after callback |
 | Email template customization | `later` | Custom SMTP (Resend) before public launch |
 | Leaked-password protection | `next` | Toggle on in Supabase Auth dashboard (advisor WARN; one click) |
 
@@ -158,7 +158,7 @@ Standardized digital agreements, signed in-platform.
 | Feature | Status | Notes |
 |---|---|---|
 | Contracts table + RLS | `done` 2026-05-28 | `contract_status` enum (draft/pending_creator/active/declined/cancelled/completed), party-only SELECT, brand-only INSERT, draft-only milestone writes |
-| Milestones table + RLS | `done` 2026-05-28 | `milestone_status` enum (pending/submitted/approved/rejected/released), gated through contract; status updates beyond `pending` land with Phase 4 escrow |
+| Milestones table + RLS | `done` 2026-05-28 | `milestone_status` enum (pending/submitted/approved/rejected/released), gated through contract; full lifecycle (submit/approve/reject/release) ships in Phase 4a |
 | 4-step contract wizard | `done` 2026-05-28 | Scope → Schedule → Milestones (live sum check) → Terms; "Split evenly" helper |
 | Brand sends contract from brief detail | `done` 2026-05-28 | `Send contract` per opted-in invitation; pre-fills wizard with brief data |
 | Brand-side status actions | `done` 2026-05-28 | Edit/Send/Delete (draft), Withdraw (pending), Mark complete/Cancel (active) |
@@ -176,19 +176,43 @@ Standardized digital agreements, signed in-platform.
 
 ---
 
-## Phase 4 — Escrow & payments `later`
+## Phase 4a — Campaign execution `done`
 
-The trust mechanism. Funds locked at signing, released per milestone.
+Payment-free milestone lifecycle. The trust mechanism without the money rails.
+Brands and creators can run a collab from signing through release without any
+Stripe wiring. `released` here means "approved for payout" operationally.
+
+| Feature | Status | Notes |
+|---|---|---|
+| Milestone submission fields + RLS for active contracts | `done` 2026-05-28 | `submission_notes`, `submission_urls`, `rejection_reason` on `milestones`; creator UPDATE on active contracts, brand UPDATE on active contracts (split policies for advisor compliance) |
+| Server actions: submit / approve / reject / release | `done` 2026-05-28 | `src/app/dashboard/contracts/_actions/milestone.actions.ts`. Auto-completes contract when all milestones release |
+| Contract detail UI: per-milestone status + role-specific actions | `done` 2026-05-28 | `MilestoneStatusBadge`, `MilestoneSubmissionForm`, `MilestoneBrandReview`, submission history, rejection feedback |
+| /dashboard/campaigns view | `done` 2026-05-28 | Active + completed contracts with milestone progress bar; reuses `ContractCard` shape |
+| Two-sided reviews on completed contracts | `done` 2026-05-28 | `contract_reviews` table + `ReviewForm` + `ReviewList`; brand reviews recompute creator score |
+| Track Record dimension wired to reviews | `done` 2026-05-28 | `recomputeAndSaveScore` now reads `completedCampaigns` count and `avgRating` from reviews |
+| Settings page (`/dashboard/settings`) | `done` 2026-05-28 | Account (display name + country), brand invoicing (`billing_country`), sign-out. No Stripe surfaces |
+| Google OAuth on auth pages | `done` 2026-05-28 | `signInWithGoogle` server action + button on sign-in/sign-up; existing `/api/auth/callback` flow honoured |
+| Forgot / reset password | `done` 2026-05-28 | `/forgot-password` triggers `resetPasswordForEmail`; `/reset-password` updates password via Supabase callback |
+| Marketing sub-pages | `done` 2026-05-28 | `/for-brands`, `/for-creators`, `/pricing`, `/about`, `/contact` (route group `(marketing)`) |
+| Waitlist table + capture form | `done` 2026-05-28 | `waitlist` table with anon insert RLS; `WaitlistForm` on landing CTA + contact page |
+| Legal pages | `done` 2026-05-28 | `/legal/privacy`, `/legal/terms`, `/legal/cookies` (placeholder copy, ready for legal review) |
+| CI pipeline | `done` 2026-05-28 | `.github/workflows/ci.yml` runs lint, typecheck, build on every PR |
+| Soften "Stripe later" copy in onboarding + actions | `done` 2026-05-28 | Step renamed Billing → Invoicing; "Phase 4 will handle refunds" removed from cancel dialogs |
+
+---
+
+## Phase 4b — Stripe escrow & payouts `later`
+
+Deferred. Real money movement layered on top of Phase 4a. The data model
+already has the right enum states (`released`, `approved`); 4b adds the
+financial side without changing existing flows.
 
 | Feature | Status | Notes |
 |---|---|---|
 | Stripe Connect onboarding (creators) | `later` | KYC, payout account, country handling |
 | Stripe checkout for brand deposit | `later` | – |
-| Milestone schema + UI | `later` | Per-contract milestones with deliverable + due date |
 | Escrow hold on milestone creation | `later` | Stripe `payment_intent` with `manual` capture |
-| Deliverable submission flow (creator) | `later` | Upload links, post URLs, attestation |
-| Verification step (brand or auto) | `later` | Approve → release; reject → dispute |
-| Payout release on verification | `later` | Avg target: under 48h |
+| Payout release on verification | `later` | Wire to existing `releaseMilestone` action; avg target under 48h |
 | Webhooks: payment, payout, refund | `later` | `src/app/api/webhooks/stripe/route.ts` |
 | 1099 / VAT-compliant statements | `later` | Per-creator earnings reports |
 
@@ -202,8 +226,8 @@ Closing the trust loop. Two-sided reviews feed the Track Record dimension.
 |---|---|---|
 | In-platform dispute filing | `later` | Triggered from rejected verification |
 | Dispute resolution workflow | `later` | 3-day brand response → 5-day Zentron mediation → escalation |
-| Two-sided reviews | `later` | Brand reviews creator + creator reviews brand |
-| Review feeds back into Track Record score | `later` | Weight in Dimension 05 |
+| Two-sided reviews | `done` 2026-05-28 | Phase 4a delivered the lightweight version (`contract_reviews` table + form) — full bidirectional flow ships here |
+| Review feeds back into Track Record score | `done` 2026-05-28 | `recomputeAndSaveScore` reads completed-campaign count + review average rating |
 | Admin dispute dashboard | `later` | Internal-only, role-gated |
 
 ---
@@ -248,7 +272,7 @@ These run alongside every phase. Track gaps here.
 | Error monitoring (Sentry) | `later` | Plugin already installed |
 | Email infra (Resend or Postmark) | `later` | Transactional templates |
 | Test setup (Vitest + Playwright) | `later` | – |
-| CI/CD pipeline (GitHub Actions) | `later` | Build, lint, typecheck, test on PR |
+| CI/CD pipeline (GitHub Actions) | `done` 2026-05-28 | `.github/workflows/ci.yml` runs lint + typecheck + build on push and PR |
 
 ---
 

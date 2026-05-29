@@ -19,7 +19,7 @@ import {
   type BrandActionState,
 } from "../_actions/brand.actions";
 
-const STEP_LABELS = ["Company", "Targeting", "Billing"];
+const STEP_LABELS = ["Company", "Targeting", "Invoicing"];
 
 const initial: CompleteBrandOnboardingInput = {
   company: {
@@ -133,7 +133,7 @@ export function OnboardingWizard() {
             </>
           ) : (
             <>
-              Billing <span className="italic text-brand">setup.</span>
+              Invoicing <span className="italic text-brand">setup.</span>
             </>
           )}
         </h2>
@@ -142,7 +142,7 @@ export function OnboardingWizard() {
             ? "Name and basics. Visible to creators when you invite them to briefs."
             : step === 1
               ? "Sets sensible defaults on every new brief. Override per-brief anytime."
-              : "We'll wire this to Stripe when escrow ships. For now it's just for invoices."}
+              : "Used for invoices and tax region. You can change this anytime in settings."}
         </p>
 
         <div className="mt-6">

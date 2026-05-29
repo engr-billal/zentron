@@ -89,7 +89,11 @@ export function BrandContractActions({
             variant="brand"
             size="sm"
             onClick={() => {
-              if (confirm("Mark this contract as completed?")) {
+              if (
+                confirm(
+                  "Mark this contract as completed? Use this if work is done outside the milestone flow.",
+                )
+              ) {
                 wrap(() => markCompleted(contractId));
               }
             }}
@@ -104,11 +108,7 @@ export function BrandContractActions({
             size="sm"
             onClick={() => {
               const reason = prompt("Reason for cancellation? (optional)");
-              if (
-                confirm(
-                  "Cancel this active contract? Phase 4 will handle refunds.",
-                )
-              ) {
+              if (confirm("Cancel this active contract?")) {
                 wrap(() => cancelContract(contractId, reason ?? undefined));
               }
             }}

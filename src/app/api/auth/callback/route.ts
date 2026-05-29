@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/role-select";
+  const next = searchParams.get("next");
 
   if (!code) {
     return NextResponse.redirect(`${origin}/sign-in?error=missing_code`);
@@ -26,6 +26,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/sign-in`);
   }
 
+  // If a specific next route was requested (e.g. /reset-password), honour it.
+  if (next) {
+    return NextResponse.redirect(`${origin}${next}`);
+  }
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("role")
@@ -33,7 +38,7 @@ export async function GET(request: NextRequest) {
     .maybeSingle();
 
   if (!profile?.role) {
-    return NextResponse.redirect(`${origin}${next}`);
+    return NextResponse.redirect(`${origin}/role-select`);
   }
 
   if (profile.role === "creator") {

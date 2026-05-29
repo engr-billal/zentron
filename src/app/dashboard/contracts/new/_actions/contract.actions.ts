@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { recomputeAndSaveScore } from "@/lib/scoring/persist";
 import {
   completeContractSchema,
   type CompleteContractInput,
@@ -343,7 +344,7 @@ export async function markCompleted(
 
   const { data: contract } = await supabase
     .from("contracts")
-    .select("brand_id, status")
+    .select("brand_id, creator_id, status")
     .eq("id", contractId)
     .maybeSingle();
   if (!contract || contract.brand_id !== user.id) {
@@ -358,6 +359,8 @@ export async function markCompleted(
     .update({ status: "completed" })
     .eq("id", contractId);
   if (error) return { error: error.message };
+
+  await recomputeAndSaveScore(contract.creator_id);
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/contracts");

@@ -21,6 +21,36 @@ function platformToNiche(value: string | null): Niche {
   }
 }
 
+async function loadTrackRecordInputs(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  creatorId: string,
+): Promise<{
+  completedCampaigns: number;
+  avgRating: number;
+}> {
+  const { count: completedCount } = await supabase
+    .from("contracts")
+    .select("id", { count: "exact", head: true })
+    .eq("creator_id", creatorId)
+    .eq("status", "completed");
+
+  const { data: reviews } = await supabase
+    .from("contract_reviews")
+    .select("rating")
+    .eq("reviewee_id", creatorId);
+
+  const ratings = reviews?.map((r) => r.rating) ?? [];
+  const avgRating =
+    ratings.length === 0
+      ? 0
+      : ratings.reduce((s, r) => s + r, 0) / ratings.length;
+
+  return {
+    completedCampaigns: completedCount ?? 0,
+    avgRating,
+  };
+}
+
 export async function recomputeAndSaveScore(
   creatorId: string,
 ): Promise<string | null> {
@@ -49,12 +79,15 @@ export async function recomputeAndSaveScore(
 
   const niche = platformToNiche(creator.niches?.[0] ?? null);
   const platform = creator.primary_platform as Platform;
+  const trackRecord = await loadTrackRecordInputs(supabase, creatorId);
 
   const result = computeZentronScore({
     followers: primaryPlatform.followers,
     engagementRate: Number(primaryPlatform.avg_engagement_rate),
     niche,
     platform,
+    completedCampaigns: trackRecord.completedCampaigns,
+    avgRating: trackRecord.avgRating,
   });
 
   const { error: upsertError } = await supabase.from("creator_scores").upsert({

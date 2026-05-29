@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import {
+  forgotPasswordSchema,
+  resetPasswordSchema,
   roleSelectSchema,
   signInSchema,
   signUpSchema,
@@ -62,6 +64,75 @@ export async function signIn(
 
   revalidatePath("/", "layout");
   redirect(next);
+}
+
+export async function signInWithGoogle(): Promise<ActionState> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${siteUrl()}/api/auth/callback`,
+    },
+  });
+  if (error) return { error: error.message };
+  if (!data.url) return { error: "Could not start Google sign-in." };
+
+  redirect(data.url);
+}
+
+export type ForgotPasswordState =
+  | { error: string }
+  | { success: true }
+  | null;
+
+export async function requestPasswordReset(
+  _prev: ForgotPasswordState,
+  formData: FormData,
+): Promise<ForgotPasswordState> {
+  const parsed = forgotPasswordSchema.safeParse({
+    email: formData.get("email"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid email" };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(
+    parsed.data.email,
+    {
+      redirectTo: `${siteUrl()}/api/auth/callback?next=/reset-password`,
+    },
+  );
+
+  if (error) return { error: error.message };
+
+  return { success: true };
+}
+
+export async function resetPassword(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const parsed = resetPasswordSchema.safeParse({
+    password: formData.get("password"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid password" };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Reset link expired. Request a new one." };
+
+  const { error } = await supabase.auth.updateUser({
+    password: parsed.data.password,
+  });
+  if (error) return { error: error.message };
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
 }
 
 export async function selectRole(

@@ -17,6 +17,16 @@ const BRAND_LINKS = [
     label: "Contracts",
     match: (p: string) => p.startsWith("/dashboard/contracts"),
   },
+  {
+    href: "/dashboard/campaigns",
+    label: "Campaigns",
+    match: (p: string) => p.startsWith("/dashboard/campaigns"),
+  },
+  {
+    href: "/dashboard/settings",
+    label: "Settings",
+    match: (p: string) => p.startsWith("/dashboard/settings"),
+  },
 ] as const;
 
 const CREATOR_LINKS = [
@@ -32,6 +42,11 @@ const CREATOR_LINKS = [
     match: (p: string) => p.startsWith("/dashboard/contracts"),
   },
   {
+    href: "/dashboard/campaigns",
+    label: "Campaigns",
+    match: (p: string) => p.startsWith("/dashboard/campaigns"),
+  },
+  {
     href: "/dashboard/profile",
     label: "Profile",
     match: (p: string) => p.startsWith("/dashboard/profile"),
@@ -40,6 +55,11 @@ const CREATOR_LINKS = [
     href: "/dashboard/platforms",
     label: "Platforms",
     match: (p: string) => p.startsWith("/dashboard/platforms"),
+  },
+  {
+    href: "/dashboard/settings",
+    label: "Settings",
+    match: (p: string) => p.startsWith("/dashboard/settings"),
   },
 ] as const;
 

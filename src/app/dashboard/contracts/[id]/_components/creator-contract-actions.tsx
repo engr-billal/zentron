@@ -68,11 +68,7 @@ export function CreatorContractActions({
           size="sm"
           onClick={() => {
             const reason = prompt("Reason for cancellation? (optional)");
-            if (
-              confirm(
-                "Cancel this active contract? Phase 4 will handle refunds.",
-              )
-            ) {
+            if (confirm("Cancel this active contract?")) {
               wrap(() => cancelContract(contractId, reason ?? undefined));
             }
           }}

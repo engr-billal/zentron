@@ -2,8 +2,11 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import type { UserRole } from "@/lib/permissions";
 import { ContractStatusBadge } from "../_components/contract-status-badge";
 import { MilestoneList } from "../_components/milestone-list";
+import { ReviewForm } from "../_components/review-form";
+import { ReviewList } from "../_components/review-list";
 import { ContractDetail } from "./_components/contract-detail";
 import { BrandContractActions } from "./_components/brand-contract-actions";
 import { CreatorContractActions } from "./_components/creator-contract-actions";
@@ -43,6 +46,7 @@ export default async function ContractDetailPage({
   const isBrand = contract.brand_id === user.id;
   const isCreator = contract.creator_id === user.id;
   if (!isBrand && !isCreator) redirect("/dashboard");
+  const role: UserRole = isBrand ? "brand" : "creator";
 
   const brand = Array.isArray(contract.brand_profiles)
     ? contract.brand_profiles[0]
@@ -59,6 +63,18 @@ export default async function ContractDetailPage({
     .select("*")
     .eq("contract_id", contract.id)
     .order("sequence", { ascending: true });
+
+  const { data: reviews } = await supabase
+    .from("contract_reviews")
+    .select("*")
+    .eq("contract_id", contract.id)
+    .order("created_at", { ascending: true });
+
+  const reviewList = reviews ?? [];
+  const userHasReviewed = reviewList.some((r) => r.reviewer_id === user.id);
+  const counterpartyName = isBrand
+    ? `@${creator?.handle}`
+    : brand?.company_name ?? "the brand";
 
   return (
     <section className="mx-auto w-full max-w-5xl px-6 py-12 sm:px-10">
@@ -120,9 +136,29 @@ export default async function ContractDetailPage({
           <MilestoneList
             milestones={milestones ?? []}
             currency={contract.currency}
+            role={role}
+            contractStatus={contract.status}
           />
         </aside>
       </div>
+
+      {contract.status === "completed" ? (
+        <div className="mt-12 flex flex-col gap-6">
+          <h2 className="font-display text-2xl text-ink">Reviews</h2>
+          {!userHasReviewed ? (
+            <ReviewForm
+              contractId={contract.id}
+              counterpartyName={counterpartyName}
+            />
+          ) : null}
+          <ReviewList
+            reviews={reviewList}
+            brandName={brand?.company_name ?? "Brand"}
+            creatorHandle={creator?.handle ?? "creator"}
+            brandId={contract.brand_id}
+          />
+        </div>
+      ) : null}
     </section>
   );
 }

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { AuthCard } from "../_components/auth-card";
+import { AuthDivider } from "../_components/auth-divider";
 import { EmailPasswordForm } from "../_components/email-password-form";
+import { GoogleAuthButton } from "../_components/google-auth-button";
 import { signUp } from "../_actions/auth.actions";
 
 export const metadata = { title: "Get early access" };
@@ -17,6 +19,8 @@ export default function SignUpPage() {
         }
         description="Brands and creators welcome. You pick which side after sign-up."
       >
+        <GoogleAuthButton label="Sign up with Google" />
+        <AuthDivider />
         <EmailPasswordForm
           action={signUp}
           submitLabel="Create account"

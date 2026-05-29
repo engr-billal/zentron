@@ -3,6 +3,7 @@
 import { ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
+import { WaitlistForm } from "./waitlist-form";
 
 export function CTA() {
   return (
@@ -51,9 +52,8 @@ export function CTA() {
           className="mt-6 max-w-2xl text-base leading-relaxed text-pretty text-paper/70"
         >
           We&apos;re onboarding the first cohort of brands and creators for
-          private beta. If you&apos;ve been burned by upfront pay, opaque
-          rates, or ghost delivery — you&apos;re who we&apos;re building this
-          for.
+          private beta. Drop your email — we&apos;ll send a single note when
+          your side opens up.
         </motion.p>
 
         <motion.div
@@ -61,36 +61,27 @@ export function CTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.6 }}
           transition={{ duration: 0.7, delay: 0.25 }}
-          className="mt-9 flex flex-wrap items-center justify-center gap-3"
+          className="mt-9 flex flex-col items-center gap-4"
         >
-          <Button asChild variant="brand" size="lg" className="h-11 px-5">
-            <a href="mailto:usman@zentronsolutions.com?subject=Launch%20partner%20-%20brand">
-              Become a launch partner
-              <ArrowUpRight className="size-4" />
-            </a>
-          </Button>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className="h-11 border-paper/20 bg-transparent px-5 text-paper hover:bg-paper/10 hover:text-paper"
-          >
-            <a href="mailto:usman@zentronsolutions.com?subject=Creator%20application">
-              Apply as creator
-            </a>
-          </Button>
-        </motion.div>
+          <WaitlistForm source="landing-cta" variant="dark" />
 
-        <p className="mt-8 text-xs text-paper/50">
-          Or write to us at{" "}
-          <a
-            href="mailto:usman@zentronsolutions.com"
-            className="text-paper underline-offset-4 hover:underline"
-          >
-            usman@zentronsolutions.com
-          </a>
-        </p>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <Button asChild size="sm" variant="brand">
+              <a href="/sign-up">
+                Or get early access
+                <ArrowUpRight className="size-3.5" />
+              </a>
+            </Button>
+            <a
+              href="mailto:usman@zentronsolutions.com"
+              className="text-xs text-paper/60 underline-offset-4 hover:text-paper hover:underline"
+            >
+              Talk to founders
+            </a>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
 }
+
