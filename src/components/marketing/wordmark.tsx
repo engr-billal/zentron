@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 export function Wordmark({
@@ -7,26 +8,28 @@ export function Wordmark({
   className?: string;
   size?: "sm" | "md" | "lg";
 }) {
-  const sizes = {
-    sm: "text-sm",
-    md: "text-base",
-    lg: "text-lg",
+  const logoSizes = {
+    sm: { width: 124, height: 20 },
+    md: { width: 156, height: 25 },
+    lg: { width: 188, height: 30 },
   } as const;
+  const dims = logoSizes[size];
 
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 font-display tracking-tight text-ink",
-        sizes[size],
+        "inline-flex items-center",
         className,
       )}
     >
-      <span
-        aria-hidden
-        className="inline-block size-2 rounded-full bg-brand"
+      <Image
+        src="/ORANGE LOGO (2).png"
+        alt="Zentron Solutions"
+        width={dims.width}
+        height={dims.height}
+        priority={size !== "sm"}
+        className="h-auto w-auto max-w-none"
       />
-      <span className="italic">Zentron</span>
-      <span className="font-normal">Solutions</span>
     </span>
   );
 }

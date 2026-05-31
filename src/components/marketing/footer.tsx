@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Wordmark } from "./wordmark";
 
 const sections = [
@@ -39,6 +40,17 @@ export function Footer() {
             The trust layer between brands and creators. Algorithmic matching,
             smart contracts, milestone escrow.
           </p>
+          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5">
+            <Image
+              src="/ORANGE LOGO (1).png"
+              alt=""
+              aria-hidden
+              width={20}
+              height={20}
+              className="size-5 rounded-sm object-cover"
+            />
+            <span className="text-xs text-muted-foreground">Launch partner beta</span>
+          </div>
           <p className="mt-6 text-xs text-muted-foreground/80">
             Zentron Solutions Ltd · Registered in the United Kingdom
           </p>

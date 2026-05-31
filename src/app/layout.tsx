@@ -37,6 +37,14 @@ export const metadata: Metadata = {
     description:
       "The trust layer between brands × creators. Built for both sides.",
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico?v=3", type: "image/x-icon" },
+      { url: "/icon.png?v=3", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico?v=3",
+    apple: "/apple-icon.png?v=3",
+  },
 };
 
 export default function RootLayout({
