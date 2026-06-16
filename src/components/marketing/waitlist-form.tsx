@@ -1,12 +1,18 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { ArrowUpRight, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   joinWaitlist,
   type WaitlistActionState,
 } from "@/app/_actions/waitlist.actions";
+
+const ROLE_OPTIONS = [
+  { value: "either", label: "Exploring" },
+  { value: "brand", label: "Brand" },
+  { value: "creator", label: "Creator" },
+] as const;
 
 export function WaitlistForm({
   source,
@@ -15,6 +21,8 @@ export function WaitlistForm({
   source?: string;
   variant?: "light" | "dark";
 }) {
+  const [roleIntent, setRoleIntent] =
+    useState<(typeof ROLE_OPTIONS)[number]["value"]>("either");
   const [state, formAction, pending] = useActionState<
     WaitlistActionState,
     FormData
@@ -27,21 +35,55 @@ export function WaitlistForm({
       <div
         role="status"
         className={cn(
-          "flex items-center gap-2 rounded-full border px-4 py-2 text-sm",
+          "flex flex-col gap-2 rounded-2xl border px-5 py-4",
           isDark
             ? "border-paper/20 bg-paper/5 text-paper"
             : "border-brand/30 bg-brand/10 text-brand",
         )}
       >
-        <Check className="size-4" />
-        <span>You&apos;re on the list — we&apos;ll be in touch.</span>
+        <div className="flex items-center gap-2 text-sm font-medium">
+          <Check className="size-4 shrink-0" />
+          <span>You&apos;re on the list.</span>
+        </div>
+        <p
+          className={cn(
+            "text-sm",
+            isDark ? "text-paper/70" : "text-brand/90",
+          )}
+        >
+          We&apos;ll email you once there&apos;s capacity on your side. No
+          spam — one message when it&apos;s your turn.
+        </p>
       </div>
     );
   }
 
   return (
-    <form action={formAction} className="flex w-full max-w-md flex-col gap-2">
+    <form action={formAction} className="flex w-full max-w-md flex-col gap-3">
       <input type="hidden" name="source" value={source ?? "landing"} />
+      <input type="hidden" name="role_intent" value={roleIntent} />
+      <div className="flex flex-wrap gap-2">
+        {ROLE_OPTIONS.map((opt) => {
+          const active = roleIntent === opt.value;
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setRoleIntent(opt.value)}
+              className={cn(
+                "rounded-full border px-3 py-1.5 text-xs font-medium uppercase tracking-[0.12em] transition-colors",
+                active
+                  ? "border-brand bg-brand text-brand-foreground"
+                  : isDark
+                    ? "border-paper/25 text-paper/70 hover:border-paper/50"
+                    : "border-border bg-card text-muted-foreground hover:border-brand/40 hover:text-ink",
+              )}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
       <div className="flex items-stretch gap-0 overflow-hidden rounded-full border border-border bg-card focus-within:border-brand">
         <input
           type="email"
@@ -53,19 +95,6 @@ export function WaitlistForm({
             isDark ? "text-paper" : "text-ink",
           )}
         />
-        <select
-          name="role_intent"
-          defaultValue="either"
-          className={cn(
-            "border-l border-border bg-transparent px-2 text-xs outline-none",
-            isDark ? "text-paper/70" : "text-muted-foreground",
-          )}
-          aria-label="Role"
-        >
-          <option value="either">I&apos;m exploring</option>
-          <option value="brand">I&apos;m a brand</option>
-          <option value="creator">I&apos;m a creator</option>
-        </select>
         <button
           type="submit"
           disabled={pending}
@@ -88,11 +117,11 @@ export function WaitlistForm({
       ) : (
         <p
           className={cn(
-            "px-2 text-xs",
+            "px-1 text-xs",
             isDark ? "text-paper/50" : "text-muted-foreground",
           )}
         >
-          No spam. We&apos;ll send a single email when your side opens up.
+          Pick a role so we know which cohort to prioritise.
         </p>
       )}
     </form>

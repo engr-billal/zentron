@@ -29,6 +29,23 @@ const brandInvoicingSchema = z.object({
     .toUpperCase(),
 });
 
+const brandProfileSchema = z.object({
+  company_name: z.string().trim().min(2, "Company name is required").max(120),
+  website: z
+    .string()
+    .trim()
+    .url("Enter a valid URL")
+    .optional()
+    .or(z.literal("")),
+  industry: z.string().trim().max(80).optional().or(z.literal("")),
+  logo_url: z
+    .string()
+    .trim()
+    .url("Enter a valid image URL")
+    .optional()
+    .or(z.literal("")),
+});
+
 export async function updateAccountSettings(
   _prev: SettingsActionState,
   formData: FormData,
@@ -95,6 +112,52 @@ export async function updateBrandInvoicing(
 
   if (error) return { error: error.message };
 
+  revalidatePath("/dashboard/settings");
+  return { success: true };
+}
+
+export async function updateBrandProfile(
+  _prev: SettingsActionState,
+  formData: FormData,
+): Promise<SettingsActionState> {
+  const parsed = brandProfileSchema.safeParse({
+    company_name: formData.get("company_name"),
+    website: formData.get("website"),
+    industry: formData.get("industry"),
+    logo_url: formData.get("logo_url"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "You must be signed in." };
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (profile?.role !== "brand") {
+    return { error: "Only brand accounts can update company profile." };
+  }
+
+  const { error } = await supabase
+    .from("brand_profiles")
+    .update({
+      company_name: parsed.data.company_name,
+      website: parsed.data.website || null,
+      industry: parsed.data.industry || null,
+      logo_url: parsed.data.logo_url || null,
+    })
+    .eq("id", user.id);
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/dashboard");
   revalidatePath("/dashboard/settings");
   return { success: true };
 }

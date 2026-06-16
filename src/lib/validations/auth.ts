@@ -7,6 +7,11 @@ export const signUpSchema = z.object({
     .string()
     .min(8, "Use at least 8 characters")
     .max(72, "Keep it under 72 characters"),
+  accepted_terms: z
+    .string()
+    .refine((v) => v === "on", {
+      message: "You must accept the Terms of Service and Privacy Policy",
+    }),
 });
 
 export const signInSchema = z.object({

@@ -17,21 +17,21 @@ const stats: Stat[] = [
     prefix: "$",
     value: 1.3,
     suffix: "B+",
-    label: "Estimated lost to influencer fraud per year across the global creator economy.",
-    source: "Industry estimates · CreatorIQ, HypeAuditor",
+    label: "Estimated annual losses from influencer fraud worldwide (2023).",
+    source: "HypeAuditor · State of Influencer Marketing 2024",
   },
   {
     prefix: "~",
-    value: 70,
+    value: 49,
     suffix: "%",
-    label: "Of brand outreach DMs go unanswered. AI-generated spam has poisoned the channel.",
-    source: "Internal partner conversations",
+    label: "Of marketers cite measuring influencer campaign ROI as a top challenge.",
+    source: "Influencer Marketing Hub · Benchmark Report 2024",
   },
   {
     value: 3,
     suffix: "–5×",
-    label: "Range a single creator's rate quote varies, depending on who's asking.",
-    source: "Cross-creator quote benchmarks",
+    label: "Typical spread in creator rate quotes for the same deliverable scope.",
+    source: "Zentron founder interviews · 2025–2026",
   },
 ];
 

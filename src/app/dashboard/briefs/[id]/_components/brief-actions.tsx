@@ -2,12 +2,13 @@
 
 import { useTransition } from "react";
 import Link from "next/link";
-import { Pencil, Send, Square, Trash2, Undo2 } from "lucide-react";
+import { Copy, Pencil, Send, Square, Trash2, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Database } from "@/types/database";
 import {
   closeBrief,
   deleteBrief,
+  duplicateBrief,
   publishBrief,
   reopenBrief,
 } from "@/app/dashboard/briefs/new/_actions/brief.actions";
@@ -92,6 +93,17 @@ export function BriefActions({
           Reopen
         </Button>
       ) : null}
+
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        onClick={() => wrap(() => duplicateBrief(briefId))}
+        disabled={pending}
+      >
+        <Copy className="size-3.5" />
+        Duplicate
+      </Button>
     </div>
   );
 }

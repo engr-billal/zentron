@@ -66,8 +66,9 @@ export function HowItWorks() {
           <span className="italic text-brand">brief to paid.</span>
         </h2>
         <p className="max-w-2xl text-base leading-relaxed text-pretty text-muted-foreground">
-          End-to-end campaign workflow. Every step is gated by a verification
-          or contract trigger — so trust never depends on goodwill alone.
+          This is the full campaign lifecycle on Zentron — six steps from brief
+          to payout. Writing the brief itself is a separate five-step wizard
+          inside the dashboard.
         </p>
       </div>
 

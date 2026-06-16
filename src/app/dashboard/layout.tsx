@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import type { UserRole } from "@/lib/permissions";
 import { DashboardNav } from "./_components/dashboard-nav";
+import { NotificationBell } from "./_components/notification-bell";
 
 export default async function DashboardLayout({
   children,
@@ -32,11 +33,14 @@ export default async function DashboardLayout({
           <Link href="/dashboard" aria-label="Dashboard">
             <Wordmark />
           </Link>
-          <form action="/api/auth/sign-out" method="post">
+          <div className="flex items-center gap-2">
+            <NotificationBell />
+            <form action="/api/auth/sign-out" method="post">
             <Button type="submit" variant="ghost" size="sm">
               Sign out
             </Button>
           </form>
+          </div>
         </div>
         {role ? (
           <div className="mx-auto w-full max-w-7xl px-6 pb-3 sm:px-10">

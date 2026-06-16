@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 import { BriefCard } from "./_components/brief-card";
 import { cn } from "@/lib/utils";
+import { ListSearch } from "@/components/shared/list-search";
 
 export const metadata = { title: "Briefs" };
 
@@ -21,7 +22,7 @@ const FILTERS: Array<{ value: "all" | Status; label: string }> = [
 export default async function BriefsListPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; q?: string }>;
 }) {
   const supabase = await createClient();
   const {
@@ -31,17 +32,48 @@ export default async function BriefsListPage({
 
   const params = await searchParams;
   const filter = (params.status ?? "all") as "all" | Status;
+  const queryText = (params.q ?? "").trim();
 
-  let query = supabase
-    .from("briefs")
-    .select("*")
-    .eq("brand_id", user.id)
-    .order("updated_at", { ascending: false });
+  const [{ data: briefs }, { count: allCount }, { count: draftCount }, { count: openCount }, { count: closedCount }] =
+    await Promise.all([
+      (() => {
+        let query = supabase
+          .from("briefs")
+          .select("*")
+          .eq("brand_id", user.id)
+          .order("updated_at", { ascending: false });
+        if (filter !== "all") query = query.eq("status", filter);
+        if (queryText) query = query.ilike("title", `%${queryText}%`);
+        return query;
+      })(),
+      supabase
+        .from("briefs")
+        .select("*", { count: "exact", head: true })
+        .eq("brand_id", user.id),
+      supabase
+        .from("briefs")
+        .select("*", { count: "exact", head: true })
+        .eq("brand_id", user.id)
+        .eq("status", "draft"),
+      supabase
+        .from("briefs")
+        .select("*", { count: "exact", head: true })
+        .eq("brand_id", user.id)
+        .eq("status", "open"),
+      supabase
+        .from("briefs")
+        .select("*", { count: "exact", head: true })
+        .eq("brand_id", user.id)
+        .eq("status", "closed"),
+    ]);
 
-  if (filter !== "all") query = query.eq("status", filter);
-
-  const { data: briefs } = await query;
   const list = briefs ?? [];
+  const counts: Record<(typeof FILTERS)[number]["value"], number> = {
+    all: allCount ?? 0,
+    draft: draftCount ?? 0,
+    open: openCount ?? 0,
+    closed: closedCount ?? 0,
+  };
 
   return (
     <section className="mx-auto w-full max-w-7xl px-6 py-12 sm:px-10">
@@ -77,10 +109,24 @@ export default async function BriefsListPage({
               )}
             >
               {f.label}
+              <span
+                className={cn(
+                  "ml-1.5 inline-flex min-w-[1.25rem] items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] tabular-nums",
+                  active ? "bg-paper/20 text-paper" : "bg-surface text-muted-foreground",
+                )}
+              >
+                {counts[f.value]}
+              </span>
             </Link>
           );
         })}
       </nav>
+
+      <ListSearch
+        placeholder="Search briefs by title"
+        defaultValue={queryText}
+        preserveParams={{ status: filter === "all" ? undefined : filter }}
+      />
 
       {list.length === 0 ? (
         <div className="mt-8 flex flex-col items-start gap-3 rounded-2xl border border-dashed border-border bg-surface/40 p-10">

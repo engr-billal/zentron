@@ -10,59 +10,133 @@ export const metadata = {
 
 export default function TermsPage() {
   return (
-    <LegalPageShell title="Terms of service" updated="May 2026">
+    <LegalPageShell title="Terms of service" updated="31 May 2026">
       <p>
-        These are placeholder terms for early-access usage of Zentron
-        Solutions Ltd&apos;s platform. They&apos;ll be replaced with a
-        reviewed contract before public launch.
+        These Terms of Service (&ldquo;Terms&rdquo;) govern your access to and
+        use of the Zentron platform operated by Zentron Solutions Ltd
+        (&ldquo;Zentron&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;). By
+        creating an account or using the service, you agree to these Terms.
       </p>
 
       <LegalSection title="Eligibility">
         <p>
-          You confirm you can lawfully enter contracts in your country. Brand
-          accounts are for businesses; creator accounts are for the person who
-          owns the channels.
+          You must be at least 16 years old and able to enter a binding contract
+          in your jurisdiction. Brand accounts are for businesses or authorised
+          representatives. Creator accounts are for the individual who owns or
+          controls the channels listed on their profile.
         </p>
       </LegalSection>
 
-      <LegalSection title="What Zentron does">
+      <LegalSection title="The service">
         <p>
-          Zentron is a marketplace and contracting layer between brands and
-          creators. We help with matching, contract templates, milestone
-          tracking, and reviews. We are not a party to contracts you sign on
-          the platform.
+          Zentron provides tools for brands and creators to discover each other,
+          publish briefs, negotiate contracts, track milestones, and leave
+          reviews. Zentron is a technology platform — we are not a party to
+          contracts formed between users unless we explicitly state otherwise
+          in writing.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="Accounts and security">
+        <p>
+          You are responsible for your credentials and all activity under your
+          account. Provide accurate information and keep it up to date. Notify
+          us promptly at{" "}
+          <a
+            href="mailto:support@zentronsolutions.com"
+            className="font-medium text-ink hover:text-brand"
+          >
+            support@zentronsolutions.com
+          </a>{" "}
+          if you suspect unauthorised access.
         </p>
       </LegalSection>
 
       <LegalSection title="Acceptable use">
+        <p>You agree not to:</p>
+        <ul className="mt-2 list-disc space-y-2 pl-5">
+          <li>misrepresent your identity, audience, reach, or deliverables;</li>
+          <li>use the platform to circumvent advertising disclosure laws;</li>
+          <li>harass, defraud, or abuse other users;</li>
+          <li>attempt to breach security or scrape data without permission;</li>
+          <li>upload unlawful, infringing, or harmful content.</li>
+        </ul>
+        <p className="mt-3">
+          We may suspend or terminate accounts that violate these Terms or pose
+          risk to the community.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="Contracts between users">
         <p>
-          Don&apos;t misrepresent your identity, audience, or capabilities.
-          Don&apos;t use Zentron to circumvent local advertising regulations.
-          Be honest in reviews. We may suspend accounts for repeated breaches.
+          When a brand and creator enter a contract on Zentron, they form a
+          direct agreement with each other. Each party is responsible for
+          deliverables, payments (when enabled), taxes, and regulatory
+          compliance. Zentron does not guarantee campaign outcomes.
         </p>
       </LegalSection>
 
       <LegalSection title="Fees">
         <p>
-          The early-access platform is free for both sides. Once paid plans
-          launch (Pay-per-success commission, Scale subscription), you&apos;ll
-          see the relevant pricing in-app before any charge.
+          Early access is currently free for brands and creators. When paid
+          plans or commission models launch, we will present pricing in-app
+          before any charge. You may stop using the service if you do not agree
+          to new fees.
         </p>
       </LegalSection>
 
-      <LegalSection title="Liability">
+      <LegalSection title="Intellectual property">
         <p>
-          To the extent permitted by law, Zentron is provided as-is during
-          early access. We&apos;re not liable for indirect or consequential
-          losses arising from contracts you sign on the platform.
+          Zentron owns the platform, branding, and software. You retain rights
+          to content you upload. You grant Zentron a limited licence to host
+          and display your content solely to operate the service.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="Disclaimers">
+        <p>
+          The service is provided &ldquo;as is&rdquo; and &ldquo;as
+          available&rdquo; to the fullest extent permitted by law. We do not
+          warrant uninterrupted or error-free operation.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="Limitation of liability">
+        <p>
+          To the extent permitted by law, Zentron is not liable for indirect,
+          incidental, special, or consequential losses, or for losses arising
+          from contracts between users. Our total liability for claims relating
+          to the service is limited to the greater of £100 or the fees you paid
+          us in the twelve months before the claim.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="Termination">
+        <p>
+          You may close your account at any time. We may suspend or terminate
+          access for breach of these Terms or to protect the platform. Sections
+          that by nature should survive termination will survive.
         </p>
       </LegalSection>
 
       <LegalSection title="Governing law">
         <p>
-          These terms are governed by the laws of England and Wales. Disputes
-          fall under the courts of England and Wales unless local law
-          requires otherwise.
+          These Terms are governed by the laws of England and Wales. Courts in
+          England and Wales have exclusive jurisdiction, subject to mandatory
+          consumer protections in your country of residence.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="Contact">
+        <p>
+          Questions about these Terms:{" "}
+          <a
+            href="mailto:legal@zentronsolutions.com"
+            className="font-medium text-ink hover:text-brand"
+          >
+            legal@zentronsolutions.com
+          </a>
+          .
         </p>
       </LegalSection>
     </LegalPageShell>

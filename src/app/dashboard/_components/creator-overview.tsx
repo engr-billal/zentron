@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { ScoreCard } from "./score-card";
+import { ScoreExplainer } from "./score-explainer";
 import { PlatformsSummary } from "./platforms-summary";
 import { ProfileSummary } from "./profile-summary";
 import { CreatorInvitations } from "./creator-invitations";
@@ -70,7 +71,10 @@ export async function CreatorOverview({ userId }: { userId: string }) {
 
       <div className="flex flex-col gap-6">
         {score ? (
-          <ScoreCard score={score} />
+          <>
+            <ScoreCard score={score} />
+            <ScoreExplainer />
+          </>
         ) : (
           <div className="rounded-2xl border border-dashed border-border bg-surface/40 p-8 text-center">
             <p className="font-display text-xl text-ink">

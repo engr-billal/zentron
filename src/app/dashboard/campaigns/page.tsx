@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { UserRole } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import { CampaignCard } from "../contracts/_components/campaign-card";
+import { ListSearch } from "@/components/shared/list-search";
 
 export const metadata = { title: "Campaigns" };
 
@@ -19,7 +20,7 @@ const FILTERS: Array<{ value: Filter; label: string }> = [
 export default async function CampaignsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; q?: string }>;
 }) {
   const supabase = await createClient();
   const {
@@ -40,6 +41,7 @@ export default async function CampaignsPage({
     params.status === "completed" || params.status === "all"
       ? params.status
       : "active";
+  const queryText = (params.q ?? "").trim();
 
   let query = supabase
     .from("contracts")
@@ -51,6 +53,7 @@ export default async function CampaignsPage({
   if (filter === "active") query = query.eq("status", "active");
   else if (filter === "completed") query = query.eq("status", "completed");
   else query = query.in("status", ["active", "completed"]);
+  if (queryText) query = query.ilike("title", `%${queryText}%`);
 
   const { data: contracts } = await query;
   const list = contracts ?? [];
@@ -100,6 +103,14 @@ export default async function CampaignsPage({
           );
         })}
       </nav>
+
+      <ListSearch
+        placeholder="Search campaigns by title"
+        defaultValue={queryText}
+        preserveParams={{
+          status: filter === "active" ? undefined : filter,
+        }}
+      />
 
       {list.length === 0 ? (
         <div className="mt-8 flex flex-col items-start gap-3 rounded-2xl border border-dashed border-border bg-surface/40 p-10">

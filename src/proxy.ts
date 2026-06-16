@@ -1,7 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/session";
 
-const AUTH_ROUTES = ["/sign-in", "/sign-up", "/verify-email"];
+const AUTH_ROUTES = [
+  "/sign-in",
+  "/sign-up",
+  "/verify-email",
+  "/forgot-password",
+  "/reset-password",
+];
 const ROLE_SELECT_ROUTE = "/role-select";
 const ONBOARDING_PREFIX = "/onboarding";
 const PROTECTED_PREFIXES = ["/dashboard", "/briefs", "/discover", "/settings"];

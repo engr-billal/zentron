@@ -42,7 +42,7 @@ export default async function NewBriefPage() {
       </p>
 
       <div className="mt-8">
-        <BriefWizard mode={{ kind: "new" }} defaults={defaults} />
+        <BriefWizard key="new-brief" mode={{ kind: "new" }} defaults={defaults} />
       </div>
     </section>
   );

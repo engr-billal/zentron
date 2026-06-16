@@ -9,11 +9,16 @@ const RECENT_BRIEFS_LIMIT = 6;
 export async function BrandOverview({ userId }: { userId: string }) {
   const supabase = await createClient();
 
-  const [{ data: brand }, { data: briefs }, { count: draftsCount }, { count: openCount }, { count: closedCount }, { count: invitationsSent }, { count: activeContracts }] =
+  const [{ data: brand }, { data: profile }, { data: briefs }, { count: draftsCount }, { count: openCount }, { count: closedCount }, { count: invitationsSent }, { count: activeContracts }] =
     await Promise.all([
       supabase
         .from("brand_profiles")
         .select("company_name")
+        .eq("id", userId)
+        .maybeSingle(),
+      supabase
+        .from("profiles")
+        .select("display_name")
         .eq("id", userId)
         .maybeSingle(),
       supabase
@@ -52,6 +57,8 @@ export async function BrandOverview({ userId }: { userId: string }) {
     ]);
 
   const hasBriefs = (briefs?.length ?? 0) > 0;
+  const greetingName = profile?.display_name?.trim() || brand?.company_name || "Brand";
+  const companyLabel = brand?.company_name?.trim();
 
   return (
     <section className="mx-auto w-full max-w-7xl px-6 py-12 sm:px-10">
@@ -62,10 +69,13 @@ export async function BrandOverview({ userId }: { userId: string }) {
           </p>
           <h1 className="mt-2 font-display text-4xl leading-tight text-ink sm:text-5xl">
             Welcome,{" "}
-            <span className="italic text-brand">
-              {brand?.company_name ?? "Brand"}
-            </span>
+            <span className="italic text-brand">{greetingName}</span>
           </h1>
+          {companyLabel && companyLabel !== greetingName ? (
+            <p className="mt-1 text-sm font-medium text-ink/80">
+              {companyLabel}
+            </p>
+          ) : null}
           <p className="mt-2 text-sm text-muted-foreground">
             Write a brief, get matched, invite the right creators.
           </p>

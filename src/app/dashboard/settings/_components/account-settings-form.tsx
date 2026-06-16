@@ -26,7 +26,11 @@ export function AccountSettingsForm({
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
-      <Field label="Display name" htmlFor="display_name">
+      <Field
+        label="Your name"
+        htmlFor="display_name"
+        hint="How you appear to collaborators. Your company name is managed separately."
+      >
         <Input
           id="display_name"
           name="display_name"

@@ -8,16 +8,23 @@ export async function Navbar() {
   } = await supabase.auth.getUser();
 
   let dashboardHref = "/dashboard";
+  let userLabel: string | undefined;
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("role")
+      .select("display_name, role")
       .eq("id", user.id)
       .maybeSingle();
     if (!profile?.role) dashboardHref = "/role-select";
+    userLabel = profile?.display_name?.trim() || user.email?.split("@")[0];
   }
 
   return (
-    <NavbarShell isAuthenticated={!!user} dashboardHref={dashboardHref} />
+    <NavbarShell
+      isAuthenticated={!!user}
+      dashboardHref={dashboardHref}
+      userLabel={userLabel}
+      userEmail={user?.email ?? undefined}
+    />
   );
 }

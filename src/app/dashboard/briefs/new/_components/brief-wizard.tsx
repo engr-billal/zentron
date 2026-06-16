@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useActionState, useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, ArrowRight, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StepIndicator } from "@/components/shared/step-indicator";
 import {
@@ -20,6 +21,7 @@ import { StepBudget } from "./step-budget";
 import { StepTerms } from "./step-terms";
 import {
   createBrief,
+  saveBriefDraft,
   updateBrief,
   type BriefActionState,
 } from "../_actions/brief.actions";
@@ -82,11 +84,19 @@ export function BriefWizard({
   initial?: CompleteBriefInput;
   defaults?: Defaults;
 }) {
+  const router = useRouter();
   const [step, setStep] = useState(0);
+  const [draftId, setDraftId] = useState<string | null>(
+    mode.kind === "edit" ? mode.briefId : null,
+  );
   const [payload, setPayload] = useState<CompleteBriefInput>(() =>
     defaultPayload(initial, defaults),
   );
   const [stepErrors, setStepErrors] = useState<StepErrors>({});
+  const [draftMessage, setDraftMessage] = useState<string | null>(null);
+  const [draftPending, setDraftPending] = useState(false);
+  const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const defaultPayloadRef = useRef(defaultPayload(initial, defaults));
 
   const submitAction = async (
     _prev: BriefActionState,
@@ -144,9 +154,57 @@ export function BriefWizard({
     return formAction(payload);
   };
 
+  const handleSaveDraft = useCallback(async () => {
+    if (!payload.basics.title.trim()) {
+      setStepErrors({
+        basics: { title: "Add a title before saving a draft" },
+      });
+      setStep(0);
+      return;
+    }
+    setDraftPending(true);
+    setDraftMessage(null);
+    const result = await saveBriefDraft(
+      draftId,
+      payload,
+      defaultPayloadRef.current,
+    );
+    setDraftPending(false);
+    if (result && "error" in result) {
+      setDraftMessage(result.error);
+      return;
+    }
+    if (result && "success" in result) {
+      setDraftId(result.briefId);
+      setDraftMessage("Draft saved.");
+      if (mode.kind === "new" && !draftId) {
+        router.replace(`/dashboard/briefs/${result.briefId}/edit`);
+      }
+    }
+  }, [draftId, mode.kind, payload, router]);
+
+  useEffect(() => {
+    if (mode.kind === "edit" || !payload.basics.title.trim()) return;
+    if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+    autoSaveTimer.current = setTimeout(() => {
+      void handleSaveDraft();
+    }, 12000);
+    return () => {
+      if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+    };
+  }, [handleSaveDraft, mode.kind, payload.basics.title]);
+
   return (
     <div className="flex flex-col gap-8">
-      <StepIndicator step={step} total={5} labels={STEP_LABELS} />
+      <StepIndicator
+        step={step}
+        total={5}
+        labels={STEP_LABELS}
+        onStepClick={(index) => {
+          setStepErrors({});
+          setStep(index);
+        }}
+      />
 
       <div className="rounded-2xl border border-border bg-card p-8 shadow-[0_24px_60px_-24px_oklch(0.18_0.01_60_/_0.12)]">
         <h2 className="font-display text-2xl text-ink">
@@ -180,7 +238,7 @@ export function BriefWizard({
               : step === 2
                 ? "Which platforms and what deliverables."
                 : step === 3
-                  ? "Budget range in cents (so $500 = 50000)."
+                  ? "Set a min–max range in your chosen currency."
                   : "Exclusivity and usage rights. Optional but worth documenting."}
         </p>
 
@@ -229,17 +287,44 @@ export function BriefWizard({
           </p>
         ) : null}
 
-        <div className="mt-8 flex items-center justify-between">
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={handleBack}
-            disabled={step === 0 || pending}
+        {draftMessage ? (
+          <p
+            className={
+              draftMessage.startsWith("Draft")
+                ? "mt-4 text-sm text-brand"
+                : "mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+            }
+            role={draftMessage.startsWith("Draft") ? "status" : "alert"}
           >
-            <ArrowLeft className="size-3.5" />
-            Back
-          </Button>
+            {draftMessage}
+          </p>
+        ) : null}
+
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleBack}
+              disabled={step === 0 || pending}
+            >
+              <ArrowLeft className="size-3.5" />
+              Back
+            </Button>
+            {mode.kind === "new" || draftId ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => void handleSaveDraft()}
+                disabled={pending || draftPending}
+              >
+                <Save className="size-3.5" />
+                {draftPending ? "Saving..." : "Save draft"}
+              </Button>
+            ) : null}
+          </div>
           {step < 4 ? (
             <Button
               type="button"

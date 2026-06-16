@@ -6,6 +6,7 @@ import type { Database } from "@/types/database";
 import type { UserRole } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import { ContractCard } from "./_components/contract-card";
+import { ListSearch } from "@/components/shared/list-search";
 
 export const metadata = { title: "Contracts" };
 
@@ -24,7 +25,7 @@ const FILTERS: Array<{ value: "all" | Status; label: string }> = [
 export default async function ContractsListPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; q?: string }>;
 }) {
   const supabase = await createClient();
   const {
@@ -42,6 +43,7 @@ export default async function ContractsListPage({
 
   const params = await searchParams;
   const filter = (params.status ?? "all") as "all" | Status;
+  const queryText = (params.q ?? "").trim();
 
   let query = supabase
     .from("contracts")
@@ -51,6 +53,7 @@ export default async function ContractsListPage({
     .order("updated_at", { ascending: false });
 
   if (filter !== "all") query = query.eq("status", filter);
+  if (queryText) query = query.ilike("title", `%${queryText}%`);
 
   const { data: contracts } = await query;
   const list = contracts ?? [];
@@ -95,6 +98,12 @@ export default async function ContractsListPage({
           );
         })}
       </nav>
+
+      <ListSearch
+        placeholder="Search contracts by title"
+        defaultValue={queryText}
+        preserveParams={{ status: filter === "all" ? undefined : filter }}
+      />
 
       {list.length === 0 ? (
         <div className="mt-8 flex flex-col items-start gap-3 rounded-2xl border border-dashed border-border bg-surface/40 p-10">

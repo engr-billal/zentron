@@ -1,34 +1,22 @@
 import Link from "next/link";
-import { AuthCard } from "../_components/auth-card";
-import { AuthDivider } from "../_components/auth-divider";
-import { EmailPasswordForm } from "../_components/email-password-form";
-import { GoogleAuthButton } from "../_components/google-auth-button";
-import { signUp } from "../_actions/auth.actions";
+import { SignUpForm } from "./_components/sign-up-form";
 
 export const metadata = { title: "Get early access" };
 
-export default function SignUpPage() {
+export default async function SignUpPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ role?: string }>;
+}) {
+  const params = await searchParams;
+  const role =
+    params.role === "brand" || params.role === "creator"
+      ? params.role
+      : undefined;
+
   return (
     <>
-      <AuthCard
-        eyebrow="Get early access"
-        title={
-          <>
-            Join the <span className="italic text-brand">trust layer.</span>
-          </>
-        }
-        description="Brands and creators welcome. You pick which side after sign-up."
-      >
-        <GoogleAuthButton label="Sign up with Google" />
-        <AuthDivider />
-        <EmailPasswordForm
-          action={signUp}
-          submitLabel="Create account"
-          pendingLabel="Creating account..."
-          minPassword={8}
-          passwordHint="At least 8 characters."
-        />
-      </AuthCard>
+      <SignUpForm intendedRole={role} />
       <p className="mt-6 text-center text-sm text-muted-foreground">
         Already have an account?{" "}
         <Link

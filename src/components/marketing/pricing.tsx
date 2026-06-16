@@ -13,6 +13,7 @@ type Plan = {
   blurb: string;
   bullets: string[];
   cta: string;
+  href: string;
   highlight?: boolean;
 };
 
@@ -31,6 +32,7 @@ const plans: Plan[] = [
       "In-platform disputes",
     ],
     cta: "Get early access",
+    href: "/sign-up",
   },
   {
     number: "02",
@@ -46,6 +48,7 @@ const plans: Plan[] = [
       "Quarterly performance reviews",
     ],
     cta: "Talk to sales",
+    href: "/contact",
     highlight: true,
   },
   {
@@ -62,6 +65,7 @@ const plans: Plan[] = [
       "Creator-side coaching",
     ],
     cta: "Browse services",
+    href: "/contact",
   },
 ];
 
@@ -173,7 +177,7 @@ export function Pricing() {
               variant={plan.highlight ? "brand" : "outline"}
               className="mt-auto h-10 w-full justify-between"
             >
-              <Link href="/sign-up">
+              <Link href={plan.href}>
                 {plan.cta}
                 <ArrowUpRight className="size-3.5" />
               </Link>

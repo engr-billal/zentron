@@ -4,25 +4,37 @@ import { useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { signInWithGoogle } from "../_actions/auth.actions";
 
-export function GoogleAuthButton({ label }: { label: string }) {
+type Props = {
+  label: string;
+  disabled?: boolean;
+  disabledHint?: string;
+};
+
+export function GoogleAuthButton({ label, disabled, disabledHint }: Props) {
   const [pending, startTransition] = useTransition();
 
   return (
-    <Button
-      type="button"
-      variant="outline"
-      size="lg"
-      className="w-full"
-      disabled={pending}
-      onClick={() => {
-        startTransition(async () => {
-          await signInWithGoogle();
-        });
-      }}
-    >
-      <GoogleMark />
-      {pending ? "Connecting..." : label}
-    </Button>
+    <div className="flex flex-col gap-2">
+      <Button
+        type="button"
+        variant="outline"
+        size="lg"
+        className="w-full"
+        disabled={pending || disabled}
+        title={disabled ? disabledHint : undefined}
+        onClick={() => {
+          startTransition(async () => {
+            await signInWithGoogle();
+          });
+        }}
+      >
+        <GoogleMark />
+        {pending ? "Connecting..." : label}
+      </Button>
+      {disabled && disabledHint ? (
+        <p className="text-xs text-muted-foreground">{disabledHint}</p>
+      ) : null}
+    </div>
   );
 }
 

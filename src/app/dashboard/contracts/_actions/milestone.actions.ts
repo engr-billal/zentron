@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { createNotification } from "@/lib/notifications";
 import { recomputeAndSaveScore } from "@/lib/scoring/persist";
 import { milestoneSubmissionSchema } from "@/lib/validations/milestone";
 
@@ -14,7 +15,7 @@ async function loadMilestone(supabase: Awaited<ReturnType<typeof createClient>>,
   return supabase
     .from("milestones")
     .select(
-      "id, contract_id, status, contracts!inner(id, brand_id, creator_id, status)",
+      "id, contract_id, status, sequence, contracts!inner(id, brand_id, creator_id, status, title)",
     )
     .eq("id", milestoneId)
     .maybeSingle();
@@ -31,6 +32,7 @@ function getContract(
     brand_id: string;
     creator_id: string;
     status: string;
+    title: string;
   };
 }
 
@@ -60,7 +62,13 @@ export async function submitMilestone(
   if (!user) return { error: "You must be signed in." };
 
   const { data: row } = await loadMilestone(supabase, milestoneId);
-  const contract = getContract(row);
+  const contract = getContract(row) as {
+    id: string;
+    brand_id: string;
+    creator_id: string;
+    status: string;
+    title: string;
+  } | null;
   if (!row || !contract) return { error: "Milestone not found." };
 
   if (contract.creator_id !== user.id) {
@@ -89,6 +97,14 @@ export async function submitMilestone(
     .eq("id", milestoneId);
   if (error) return { error: error.message };
 
+  await createNotification({
+    userId: contract.brand_id,
+    type: "milestone_submitted",
+    title: "Milestone submitted",
+    body: `Milestone ${row.sequence} on "${contract.title}" is ready for review.`,
+    href: `/dashboard/contracts/${contract.id}`,
+  });
+
   revalidateContract(contract.id);
   return { success: true, milestoneId };
 }
@@ -103,7 +119,13 @@ export async function approveMilestone(
   if (!user) return { error: "You must be signed in." };
 
   const { data: row } = await loadMilestone(supabase, milestoneId);
-  const contract = getContract(row);
+  const contract = getContract(row) as {
+    id: string;
+    brand_id: string;
+    creator_id: string;
+    status: string;
+    title: string;
+  } | null;
   if (!row || !contract) return { error: "Milestone not found." };
 
   if (contract.brand_id !== user.id) {
@@ -125,6 +147,14 @@ export async function approveMilestone(
     })
     .eq("id", milestoneId);
   if (error) return { error: error.message };
+
+  await createNotification({
+    userId: contract.creator_id,
+    type: "milestone_approved",
+    title: "Milestone approved",
+    body: `Milestone ${row.sequence} on "${contract.title}" was approved.`,
+    href: `/dashboard/contracts/${contract.id}`,
+  });
 
   revalidateContract(contract.id);
   return { success: true, milestoneId };
@@ -149,7 +179,13 @@ export async function rejectMilestone(
   if (!user) return { error: "You must be signed in." };
 
   const { data: row } = await loadMilestone(supabase, milestoneId);
-  const contract = getContract(row);
+  const contract = getContract(row) as {
+    id: string;
+    brand_id: string;
+    creator_id: string;
+    status: string;
+    title: string;
+  } | null;
   if (!row || !contract) return { error: "Milestone not found." };
 
   if (contract.brand_id !== user.id) {
@@ -185,7 +221,13 @@ export async function releaseMilestone(
   if (!user) return { error: "You must be signed in." };
 
   const { data: row } = await loadMilestone(supabase, milestoneId);
-  const contract = getContract(row);
+  const contract = getContract(row) as {
+    id: string;
+    brand_id: string;
+    creator_id: string;
+    status: string;
+    title: string;
+  } | null;
   if (!row || !contract) return { error: "Milestone not found." };
 
   if (contract.brand_id !== user.id) {

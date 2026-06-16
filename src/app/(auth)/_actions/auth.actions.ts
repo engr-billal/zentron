@@ -24,17 +24,23 @@ export async function signUp(
   const parsed = signUpSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
+    accepted_terms: formData.get("accepted_terms"),
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
   }
 
   const supabase = await createClient();
+  const intendedRole = formData.get("intended_role");
   const { error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
       emailRedirectTo: `${siteUrl()}/api/auth/callback`,
+      data:
+        intendedRole === "brand" || intendedRole === "creator"
+          ? { intended_role: intendedRole }
+          : undefined,
     },
   });
 

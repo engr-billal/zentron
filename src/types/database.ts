@@ -118,6 +118,39 @@ export type Database = {
           },
         ]
       }
+      brief_share_links: {
+        Row: {
+          brief_id: string
+          created_at: string
+          created_by: string
+          expires_at: string
+          id: string
+          redeemed_at: string | null
+          redeemed_by: string | null
+          token: string
+        }
+        Insert: {
+          brief_id: string
+          created_at?: string
+          created_by: string
+          expires_at: string
+          id?: string
+          redeemed_at?: string | null
+          redeemed_by?: string | null
+          token: string
+        }
+        Update: {
+          brief_id?: string
+          created_at?: string
+          created_by?: string
+          expires_at?: string
+          id?: string
+          redeemed_at?: string | null
+          redeemed_by?: string | null
+          token?: string
+        }
+        Relationships: []
+      }
       briefs: {
         Row: {
           brand_id: string
@@ -182,6 +215,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+        }
+        Relationships: []
       }
       contract_reviews: {
         Row: {
@@ -527,6 +584,39 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          href: string | null
+          id: string
+          read_at: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          href?: string | null
+          id?: string
+          read_at?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          href?: string | null
+          id?: string
+          read_at?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -586,7 +676,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      redeem_brief_share_link: {
+        Args: { p_token: string }
+        Returns: string
+      }
     }
     Enums: {
       audience_size_band: "nano" | "micro" | "mid" | "macro" | "mega"

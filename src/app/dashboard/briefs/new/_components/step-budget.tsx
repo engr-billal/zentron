@@ -3,6 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Field, selectClass } from "@/components/shared/field";
 import { CURRENCIES } from "@/lib/constants/creator";
+import { centsToMajor, majorToCents } from "@/lib/money";
 import type { BriefBudgetInput } from "@/lib/validations/brief";
 
 type Props = {
@@ -40,46 +41,44 @@ export function StepBudget({ value, errors, onChange }: Props) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field
-          label="Min budget (cents)"
-          htmlFor="budget_min_cents"
-          hint="E.g. 50000 = $500.00"
+          label={`Min budget (${value.currency})`}
+          htmlFor="budget_min"
+          hint="Enter the amount in your currency, e.g. 500 for $500."
           error={errors.budget_min_cents}
         >
           <Input
-            id="budget_min_cents"
+            id="budget_min"
             type="number"
             min={0}
-            value={value.budget_min_cents ?? ""}
+            step="0.01"
+            value={centsToMajor(value.budget_min_cents)}
             onChange={(e) =>
               onChange({
                 ...value,
-                budget_min_cents: e.target.value
-                  ? Number(e.target.value)
-                  : undefined,
+                budget_min_cents: majorToCents(e.target.value),
               })
             }
-            placeholder="50000"
+            placeholder="500"
           />
         </Field>
         <Field
-          label="Max budget (cents)"
-          htmlFor="budget_max_cents"
+          label={`Max budget (${value.currency})`}
+          htmlFor="budget_max"
           error={errors.budget_max_cents}
         >
           <Input
-            id="budget_max_cents"
+            id="budget_max"
             type="number"
             min={0}
-            value={value.budget_max_cents ?? ""}
+            step="0.01"
+            value={centsToMajor(value.budget_max_cents)}
             onChange={(e) =>
               onChange({
                 ...value,
-                budget_max_cents: e.target.value
-                  ? Number(e.target.value)
-                  : undefined,
+                budget_max_cents: majorToCents(e.target.value),
               })
             }
-            placeholder="200000"
+            placeholder="2000"
           />
         </Field>
       </div>

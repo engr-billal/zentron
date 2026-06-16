@@ -7,6 +7,7 @@ import { BriefDetail } from "./_components/brief-detail";
 import { BriefActions } from "./_components/brief-actions";
 import { MatchPreview } from "./_components/match-preview";
 import { InvitationsSent } from "./_components/invitations-sent";
+import { BriefShareLink } from "./_components/brief-share-link";
 
 export const metadata = { title: "Brief detail" };
 
@@ -61,6 +62,9 @@ export default async function BriefDetailPage({
         </div>
 
         <aside className="flex flex-col gap-8">
+          {brief.status !== "closed" ? (
+            <BriefShareLink briefId={brief.id} />
+          ) : null}
           <section>
             <h2 className="mb-3 font-display text-xl text-ink">
               Invitations sent

@@ -22,14 +22,17 @@ const ICONS: Record<RoleValue, React.ComponentType<{ className?: string }>> = {
 type Props = {
   action: (prev: ActionState, formData: FormData) => Promise<ActionState>;
   options: Option[];
+  defaultRole?: RoleValue;
 };
 
-export function RoleSelectForm({ action, options }: Props) {
+export function RoleSelectForm({ action, options, defaultRole }: Props) {
   const [state, formAction, pending] = useActionState<ActionState, FormData>(
     action,
     null,
   );
-  const [selected, setSelected] = useState<RoleValue | null>(null);
+  const [selected, setSelected] = useState<RoleValue | null>(
+    defaultRole ?? null,
+  );
 
   return (
     <form action={formAction} className="flex flex-col gap-4">

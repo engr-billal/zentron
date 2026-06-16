@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,8 @@ type Props = {
   pendingLabel: string;
   minPassword?: number;
   passwordHint?: string;
+  requireLegalConsent?: boolean;
+  intendedRole?: "brand" | "creator";
 };
 
 export function EmailPasswordForm({
@@ -20,6 +23,8 @@ export function EmailPasswordForm({
   pendingLabel,
   minPassword,
   passwordHint,
+  requireLegalConsent,
+  intendedRole,
 }: Props) {
   const [state, formAction, pending] = useActionState<ActionState, FormData>(
     action,
@@ -28,6 +33,9 @@ export function EmailPasswordForm({
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
+      {intendedRole ? (
+        <input type="hidden" name="intended_role" value={intendedRole} />
+      ) : null}
       <div className="flex flex-col gap-2">
         <Label htmlFor="email">Email</Label>
         <Input
@@ -53,6 +61,36 @@ export function EmailPasswordForm({
           <p className="text-xs text-muted-foreground">{passwordHint}</p>
         ) : null}
       </div>
+      {requireLegalConsent ? (
+        <label className="flex items-start gap-2 text-sm text-muted-foreground">
+          <input
+            type="checkbox"
+            name="accepted_terms"
+            value="on"
+            required
+            className="mt-1 size-4 rounded border-border accent-brand"
+          />
+          <span>
+            I agree to the{" "}
+            <Link
+              href="/legal/terms"
+              className="font-medium text-ink underline-offset-4 hover:text-brand hover:underline"
+              target="_blank"
+            >
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link
+              href="/legal/privacy"
+              className="font-medium text-ink underline-offset-4 hover:text-brand hover:underline"
+              target="_blank"
+            >
+              Privacy Policy
+            </Link>
+            .
+          </span>
+        </label>
+      ) : null}
       {state?.error ? (
         <p
           role="alert"
