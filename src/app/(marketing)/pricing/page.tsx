@@ -20,13 +20,12 @@ export default function PricingPage() {
             Pricing
           </p>
           <h1 className="mt-3 font-display text-5xl leading-[1.1] text-balance text-ink sm:text-6xl">
-            Pay only when{" "}
-            <span className="italic text-brand">campaigns ship.</span>
+            Plans for{" "}
+            <span className="italic text-brand">brands and teams.</span>
           </h1>
           <p className="mt-5 text-base leading-relaxed text-pretty text-muted-foreground">
-            Free for both sides to join. We earn 8% commission on live
-            campaigns, plus an optional Scale subscription and a few à la
-            carte services.
+            Creators always join free. Brands start free during early access.
+            Commission applies only when paid tiers go live after beta.
           </p>
         </div>
       </section>

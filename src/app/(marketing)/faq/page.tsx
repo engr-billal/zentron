@@ -43,7 +43,7 @@ export default function FaqPage() {
         </div>
       </section>
 
-      <Section eyebrow={{ number: "01", label: "Common questions" }}>
+      <Section eyebrow="Common questions">
         <dl className="flex flex-col gap-4">
           {faqs.map((item) => (
             <div

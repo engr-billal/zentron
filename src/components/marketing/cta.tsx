@@ -1,15 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { WaitlistForm } from "./waitlist-form";
 
 export function CTA() {
   return (
     <section
-      id="waitlist"
-      className="relative isolate overflow-hidden border-t border-border bg-ink px-6 py-28 text-paper sm:px-10 lg:py-36"
+      id="get-started"
+      className="relative isolate overflow-hidden border-t border-border bg-ink px-6 py-24 text-paper sm:px-10 lg:py-32"
     >
       <div
         aria-hidden
@@ -20,28 +20,26 @@ export function CTA() {
         className="pointer-events-none absolute -top-32 left-1/2 -z-10 h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-brand/25 blur-3xl"
       />
 
-      <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
-        <motion.span
+      <div className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
+        <motion.p
           initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.6 }}
           transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 rounded-full border border-paper/15 bg-paper/5 px-3 py-1 text-xs text-paper/70"
+          className="text-[11px] font-medium uppercase tracking-[0.18em] text-brand"
         >
-          <span className="size-1.5 rounded-full bg-brand" />
-          Now onboarding launch partners
-        </motion.span>
+          Get started
+        </motion.p>
 
         <motion.h2
           initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.6 }}
           transition={{ duration: 0.7, delay: 0.05 }}
-          className="mt-6 font-display text-4xl leading-[1.1] text-balance sm:text-5xl lg:text-6xl"
+          className="mt-4 font-display text-4xl leading-[1.1] text-balance sm:text-5xl"
         >
-          Let&apos;s build{" "}
-          <span className="italic text-brand">the trust layer</span> the
-          creator economy actually needs.
+          Create your account and{" "}
+          <span className="italic text-brand">open the dashboard.</span>
         </motion.h2>
 
         <motion.p
@@ -49,11 +47,10 @@ export function CTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.6 }}
           transition={{ duration: 0.7, delay: 0.15 }}
-          className="mt-6 max-w-2xl text-base leading-relaxed text-pretty text-paper/70"
+          className="mt-5 max-w-xl text-base leading-relaxed text-pretty text-paper/70"
         >
-          We&apos;re onboarding the first cohort of brands and creators for
-          private beta. Drop your email — we&apos;ll send a single note when
-          your side opens up.
+          Pick brand or creator after sign-up. The brief builder, matching,
+          contracts, and milestone tools are ready to use in early access.
         </motion.p>
 
         <motion.div
@@ -61,27 +58,40 @@ export function CTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.6 }}
           transition={{ duration: 0.7, delay: 0.25 }}
-          className="mt-9 flex flex-col items-center gap-4"
+          className="mt-9 flex flex-wrap items-center justify-center gap-3"
         >
-          <WaitlistForm source="landing-cta" variant="dark" />
-
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <Button asChild size="sm" variant="brand">
-              <a href="/sign-up">
-                Or get early access
-                <ArrowUpRight className="size-3.5" />
-              </a>
-            </Button>
-            <a
-              href="mailto:usman@zentronsolutions.com"
-              className="text-xs text-paper/60 underline-offset-4 hover:text-paper hover:underline"
-            >
-              Talk to founders
-            </a>
-          </div>
+          <Button asChild size="lg" variant="brand" className="h-11 px-6">
+            <Link href="/sign-up">
+              Create free account
+              <ArrowUpRight className="size-4" />
+            </Link>
+          </Button>
+          <Button
+            asChild
+            size="lg"
+            variant="outline"
+            className="h-11 border-paper/25 bg-transparent px-6 text-paper hover:bg-paper/10 hover:text-paper"
+          >
+            <Link href="/sign-in">Sign in</Link>
+          </Button>
         </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.35 }}
+          className="mt-6 text-sm text-paper/50"
+        >
+          Prefer a walkthrough first?{" "}
+          <Link
+            href="/contact"
+            className="text-paper/80 underline-offset-4 hover:text-paper hover:underline"
+          >
+            Book a call with the team
+          </Link>
+        </motion.p>
       </div>
     </section>
   );
 }
-

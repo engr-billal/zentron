@@ -29,7 +29,7 @@ export function Vision() {
   return (
     <Section
       id="vision"
-      eyebrow={{ number: "07", label: "The vision" }}
+      eyebrow="Our direction"
     >
       <div className="grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:items-end">
         <h2 className="font-display text-4xl leading-[1.1] text-balance text-ink sm:text-5xl">

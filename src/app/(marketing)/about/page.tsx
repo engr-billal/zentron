@@ -24,16 +24,15 @@ export default function AboutPage() {
             <span className="italic text-brand">the handshake.</span>
           </h1>
           <p className="mt-6 text-base leading-relaxed text-muted-foreground">
-            Zentron Solutions is a UK Limited company building the trust layer
-            for creator marketing. We started this after watching brands lose
-            money to ghost deliveries and creators chase invoices for months.
-            Both sides need the same thing: standardized contracts, fair
-            pricing signals, and milestone-based payouts.
+            Zentron Solutions is a UK company building software for brand–creator
+            campaigns. We ship the tools teams actually use — briefs, matching,
+            contracts, and milestones — instead of another deck about the
+            creator economy.
           </p>
         </div>
       </section>
 
-      <Section eyebrow={{ number: "01", label: "Principles" }}>
+      <Section eyebrow="Principles">
         <div className="grid gap-6 lg:grid-cols-2">
           {PRINCIPLES.map((p) => (
             <div

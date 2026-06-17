@@ -1,24 +1,23 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Wordmark } from "./wordmark";
 
 const sections = [
   {
     label: "Product",
     links: [
+      { label: "Features", href: "/#features" },
+      { label: "How it works", href: "/#how" },
       { label: "For brands", href: "/for-brands" },
       { label: "For creators", href: "/for-creators" },
       { label: "Pricing", href: "/pricing" },
-      { label: "How it works", href: "/#how" },
     ],
   },
   {
     label: "Company",
     links: [
       { label: "About", href: "/about" },
-      { label: "Contact", href: "/contact" },
       { label: "FAQ", href: "/faq" },
-      { label: "Vision", href: "/#vision" },
+      { label: "Contact", href: "/contact" },
     ],
   },
   {
@@ -38,22 +37,25 @@ export function Footer() {
         <div>
           <Wordmark size="lg" />
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-            The trust layer between brands and creators. Algorithmic matching,
-            smart contracts, milestone escrow.
+            The workspace for brand–creator campaigns. Write briefs, match
+            creators, sign contracts, and track milestones in one place.
           </p>
-          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5">
-            <Image
-              src="/ORANGE LOGO (1).png"
-              alt=""
-              aria-hidden
-              width={20}
-              height={20}
-              className="size-5 rounded-sm object-cover"
-            />
-            <span className="text-xs text-muted-foreground">Launch partner beta</span>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Link
+              href="/sign-up"
+              className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-ink transition-colors hover:border-brand/40"
+            >
+              Create account
+            </Link>
+            <Link
+              href="/sign-in"
+              className="inline-flex items-center rounded-full px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:text-ink"
+            >
+              Sign in
+            </Link>
           </div>
           <p className="mt-6 text-xs text-muted-foreground/80">
-            Zentron Solutions Ltd · Registered in the United Kingdom
+            Zentron Solutions Ltd · United Kingdom
           </p>
         </div>
 
@@ -83,9 +85,8 @@ export function Footer() {
       <div className="border-t border-border">
         <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-3 px-6 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:px-10">
           <p>© {new Date().getFullYear()} Zentron Solutions. All rights reserved.</p>
-          <p>
-            Built for both sides of the handshake.{" "}
-            <span className="text-brand">●</span>
+          <p className="text-muted-foreground/80">
+            Early access — milestone tracking live; payment rails on the way.
           </p>
         </div>
       </div>

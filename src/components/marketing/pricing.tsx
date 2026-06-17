@@ -5,8 +5,6 @@ import { cn } from "@/lib/utils";
 import { Section } from "./section";
 
 type Plan = {
-  number: string;
-  kind: string;
   name: string;
   price: string;
   unit: string;
@@ -19,75 +17,66 @@ type Plan = {
 
 const plans: Plan[] = [
   {
-    number: "01",
-    kind: "Commission",
-    name: "Pay-per-success",
+    name: "Pay per campaign",
     price: "8%",
-    unit: "per campaign",
-    blurb: "Zero upfront fees. Aligned incentives. We only earn when campaigns deliver.",
+    unit: "commission",
+    blurb: "Default plan for most brands. No monthly fee — we earn when a campaign completes.",
     bullets: [
-      "Free to join — brands & creators",
-      "Standardized smart contracts",
-      "Milestone escrow included",
-      "In-platform disputes",
+      "Free to create an account",
+      "Briefs, matching, and contracts included",
+      "Milestone tracking included",
+      "Commission on completed campaigns only",
     ],
-    cta: "Get early access",
-    href: "/sign-up",
+    cta: "Create brand account",
+    href: "/sign-up?role=brand",
   },
   {
-    number: "02",
-    kind: "Subscription",
     name: "Scale",
     price: "$499",
-    unit: "per month",
-    blurb: "For brands running 4+ campaigns monthly. Reduced commission, dedicated success manager.",
+    unit: "/ month",
+    blurb: "For teams running several campaigns a month. Lower commission and hands-on support.",
     bullets: [
       "3% commission per campaign",
-      "Dedicated success manager",
-      "Priority creator access",
-      "Quarterly performance reviews",
+      "Dedicated success contact",
+      "Priority matching",
+      "Quarterly performance review",
     ],
-    cta: "Talk to sales",
+    cta: "Talk to us",
     href: "/contact",
     highlight: true,
   },
   {
-    number: "03",
-    kind: "Value-add",
-    name: "Custom services",
-    price: "À la carte",
-    unit: "one-off",
-    blurb: "Strategy, brief writing, performance reports, featured placements — sold individually.",
+    name: "Add-ons",
+    price: "Custom",
+    unit: "pricing",
+    blurb: "Optional services — brief writing, reporting, or featured placement — billed separately.",
     bullets: [
-      "Brief writing & strategy",
-      "Performance deep-dives",
-      "Featured marketplace placements",
-      "Creator-side coaching",
+      "Brief and strategy support",
+      "Campaign performance reports",
+      "Featured creator placement",
+      "Creator coaching sessions",
     ],
-    cta: "Browse services",
+    cta: "View services",
     href: "/contact",
   },
 ];
 
 export function Pricing() {
   return (
-    <Section
-      id="pricing"
-      eyebrow={{ number: "06", label: "Business model" }}
-    >
+    <Section id="pricing" eyebrow="Pricing">
       <div className="grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:items-end">
         <h2 className="font-display text-4xl leading-[1.1] text-balance text-ink sm:text-5xl">
-          Three revenue streams.{" "}
-          <span className="italic text-brand">No surprises.</span>
+          Simple plans.{" "}
+          <span className="italic text-brand">No setup fee.</span>
         </h2>
         <p className="max-w-2xl text-base leading-relaxed text-pretty text-muted-foreground">
-          We earn when campaigns deliver, not before. Free to join for both
-          sides. 10% off the first collaboration via referral. Zero risk —
-          we only get paid on live campaigns.
+          Creators join free. Brands join free. During early access you can run
+          the full workflow without paying platform fees — paid commission
+          tiers activate when we exit beta.
         </p>
       </div>
 
-      <div className="mt-14 grid gap-4 lg:grid-cols-3">
+      <div className="mt-12 grid gap-4 lg:grid-cols-3">
         {plans.map((plan) => (
           <div
             key={plan.name}
@@ -103,17 +92,9 @@ export function Pricing() {
               className="absolute inset-x-0 top-0 h-px bg-brand"
             />
             <div>
-              <p
-                className={cn(
-                  "text-[11px] uppercase tracking-[0.18em]",
-                  plan.highlight ? "text-paper/60" : "text-muted-foreground",
-                )}
-              >
-                {plan.number} · {plan.kind}
-              </p>
               <h3
                 className={cn(
-                  "mt-2 font-display text-2xl",
+                  "font-display text-2xl",
                   plan.highlight ? "text-paper" : "text-ink",
                 )}
               >
@@ -186,23 +167,17 @@ export function Pricing() {
         ))}
       </div>
 
-      <div className="mt-10 grid gap-3 rounded-2xl border border-border bg-surface/50 p-6 sm:grid-cols-3">
-        {[
-          { label: "FREE", value: "for brands & creators" },
-          { label: "10% OFF", value: "first collab via referral" },
-          { label: "ZERO RISK", value: "we earn only on live campaigns" },
-        ].map((item) => (
-          <div
-            key={item.label}
-            className="flex items-baseline gap-3 text-sm"
-          >
-            <span className="font-display text-base text-brand">
-              ✦ {item.label}
-            </span>
-            <span className="text-muted-foreground">{item.value}</span>
-          </div>
-        ))}
-      </div>
+      <p className="mt-8 text-center text-sm text-muted-foreground">
+        Questions about pricing?{" "}
+        <Link href="/faq" className="font-medium text-ink hover:text-brand">
+          Read the FAQ
+        </Link>{" "}
+        or{" "}
+        <Link href="/contact" className="font-medium text-ink hover:text-brand">
+          contact us
+        </Link>
+        .
+      </p>
     </Section>
   );
 }

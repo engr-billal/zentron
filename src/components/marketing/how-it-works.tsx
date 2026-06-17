@@ -4,50 +4,44 @@ import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import {
   ClipboardList,
-  Sparkles,
-  UserCheck,
   FileSignature,
   Megaphone,
-  Banknote,
+  Send,
+  Sparkles,
+  UserCheck,
 } from "lucide-react";
 import { Section } from "./section";
 
 const steps = [
   {
-    step: "1",
     icon: ClipboardList,
-    title: "Brief submitted",
-    description: "Brand defines objectives, audience, deliverables, budget.",
+    title: "Write a brief",
+    description: "Set objective, audience, deliverables, and budget in the wizard.",
   },
   {
-    step: "2",
     icon: Sparkles,
-    title: "Algorithm shortlists",
-    description: "Top creators scored across 5 dimensions — auto-ranked.",
+    title: "Review matches",
+    description: "Creators ranked by fit score. Invite the ones you want.",
   },
   {
-    step: "3",
     icon: UserCheck,
     title: "Creators opt in",
-    description: "Pre-filtered list. No cold outreach, no DM spam.",
+    description: "No cold DMs — creators respond to briefs that match them.",
   },
   {
-    step: "4",
     icon: FileSignature,
-    title: "Contract signed",
-    description: "Smart agreement, both parties signed in-platform.",
+    title: "Sign a contract",
+    description: "Fees, milestones, and dates agreed in one place.",
   },
   {
-    step: "5",
     icon: Megaphone,
-    title: "Campaign runs",
-    description: "Milestones tracked, content verified, performance logged.",
+    title: "Deliver & review",
+    description: "Submit work, approve milestones, and leave a review.",
   },
   {
-    step: "6",
-    icon: Banknote,
-    title: "Payment released",
-    description: "Escrow flows out per milestone — avg under 48 hours.",
+    icon: Send,
+    title: "Payments (soon)",
+    description: "Milestone escrow and payouts — tracked in-app today, rails shipping next.",
   },
 ];
 
@@ -56,60 +50,41 @@ export function HowItWorks() {
   const inView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
-    <Section
-      id="how"
-      eyebrow={{ number: "03", label: "How it works" }}
-    >
+    <Section id="how" eyebrow="Workflow">
       <div className="grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:items-end">
         <h2 className="font-display text-4xl leading-[1.1] text-balance text-ink sm:text-5xl">
-          Six steps from{" "}
-          <span className="italic text-brand">brief to paid.</span>
+          From brief to{" "}
+          <span className="italic text-brand">finished campaign.</span>
         </h2>
         <p className="max-w-2xl text-base leading-relaxed text-pretty text-muted-foreground">
-          This is the full campaign lifecycle on Zentron — six steps from brief
-          to payout. Writing the brief itself is a separate five-step wizard
-          inside the dashboard.
+          The brief builder is five steps inside the app. The full campaign
+          lifecycle below is what happens after you publish — matching,
+          contracting, delivery, and (soon) payment release per milestone.
         </p>
       </div>
 
-      <div ref={ref} className="relative mt-16">
-        <div
-          aria-hidden
-          className="absolute top-10 left-0 hidden h-px w-full overflow-hidden bg-border md:block"
-        >
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={inView ? { scaleX: 1 } : undefined}
-            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-            style={{ transformOrigin: "left" }}
-            className="h-full w-full bg-brand"
-          />
-        </div>
-
-        <ol className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 lg:gap-4">
+      <div ref={ref} className="relative mt-14">
+        <ol className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {steps.map((s, i) => {
             const Icon = s.icon;
             return (
               <motion.li
-                key={s.step}
+                key={s.title}
                 initial={{ opacity: 0, y: 14 }}
                 animate={inView ? { opacity: 1, y: 0 } : undefined}
                 transition={{
                   duration: 0.5,
-                  delay: 0.15 + i * 0.08,
+                  delay: 0.1 + i * 0.06,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="relative flex flex-col gap-3"
+                className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-6"
               >
-                <div className="flex size-12 items-center justify-center rounded-full bg-paper ring-1 ring-border">
-                  <Icon className="size-4 text-ink" />
-                </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="font-display text-2xl leading-none text-brand">
-                    {s.step}
-                  </span>
-                  <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                    Step
+                <div className="flex items-center gap-3">
+                  <div className="flex size-10 items-center justify-center rounded-full bg-surface ring-1 ring-border">
+                    <Icon className="size-4 text-ink" />
+                  </div>
+                  <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                    Step {i + 1}
                   </span>
                 </div>
                 <h3 className="font-display text-lg text-ink">{s.title}</h3>
