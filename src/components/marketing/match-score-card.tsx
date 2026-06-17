@@ -29,10 +29,10 @@ export function MatchScoreCard() {
         <div className="flex items-center justify-between border-b border-border bg-surface/60 px-5 py-3">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
             <span className="size-1.5 rounded-full bg-brand" />
-            Final match score
+            Match preview
           </div>
           <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-            Brief #ZTR-0142
+            Summer launch brief
           </span>
         </div>
 
@@ -82,7 +82,7 @@ export function MatchScoreCard() {
 
         <div className="flex items-center gap-2 border-t border-border bg-surface/60 px-5 py-3 text-xs text-muted-foreground">
           <CheckCircle2 className="size-3.5 text-brand" />
-          Scored across 5 dimensions · refreshed daily
+          Scored on 5 dimensions · updates with your platforms
         </div>
       </div>
 
@@ -97,9 +97,9 @@ export function MatchScoreCard() {
             £
           </span>
           <div>
-            <p className="font-medium text-ink">£2,400 escrowed</p>
+            <p className="font-medium text-ink">£2,400 contract</p>
             <p className="text-[11px] text-muted-foreground">
-              Released per milestone
+              3 milestones
             </p>
           </div>
         </div>

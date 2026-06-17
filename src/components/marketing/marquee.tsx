@@ -1,15 +1,14 @@
 const tags = [
-  "D2C brands",
-  "AI tools",
-  "Beauty",
-  "Finance creators",
-  "B2B / Tech",
-  "Lifestyle",
-  "Podcast hosts",
-  "YouTube long-form",
-  "Shopify merchants",
-  "UK · EU · US",
-  "Nano → Mega",
+  "Brief wizard",
+  "Creator matching",
+  "Zentron Score",
+  "Contracts",
+  "Milestone tracking",
+  "Invite links",
+  "Reviews",
+  "Brand dashboard",
+  "Creator profile",
+  "Campaign view",
 ];
 
 export function Marquee() {
@@ -17,7 +16,7 @@ export function Marquee() {
   return (
     <div
       aria-hidden
-      className="relative w-full overflow-hidden border-y border-border/70 bg-surface/60 py-4"
+      className="relative w-full overflow-hidden border-y border-border/70 bg-surface/60 py-3.5"
     >
       <div className="flex w-max animate-marquee gap-10 whitespace-nowrap text-sm text-muted-foreground">
         {items.map((tag, i) => (

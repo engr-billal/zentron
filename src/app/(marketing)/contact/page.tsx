@@ -32,7 +32,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <Section eyebrow={{ number: "01", label: "Reach us" }}>
+      <Section eyebrow="Reach us">
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="rounded-2xl border border-border bg-card p-6">
             <p className="text-[11px] uppercase tracking-[0.18em] text-brand">

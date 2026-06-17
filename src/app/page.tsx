@@ -6,8 +6,8 @@ import { Solution } from "@/components/marketing/solution";
 import { HowItWorks } from "@/components/marketing/how-it-works";
 import { ZentronScore } from "@/components/marketing/zentron-score";
 import { Escrow } from "@/components/marketing/escrow";
+import { AudienceSplit } from "@/components/marketing/audience-split";
 import { Pricing } from "@/components/marketing/pricing";
-import { Vision } from "@/components/marketing/vision";
 import { CTA } from "@/components/marketing/cta";
 import { Footer } from "@/components/marketing/footer";
 
@@ -23,8 +23,8 @@ export default function Home() {
         <HowItWorks />
         <ZentronScore />
         <Escrow />
+        <AudienceSplit />
         <Pricing />
-        <Vision />
         <CTA />
       </main>
       <Footer />

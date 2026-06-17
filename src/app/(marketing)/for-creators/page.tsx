@@ -70,7 +70,7 @@ export default function ForCreatorsPage() {
         </div>
       </section>
 
-      <Section eyebrow={{ number: "01", label: "How it works for creators" }}>
+      <Section eyebrow="How it works for creators">
         <div className="grid gap-6 lg:grid-cols-3">
           {[
             {

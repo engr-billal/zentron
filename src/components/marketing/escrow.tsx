@@ -1,79 +1,68 @@
-import { Check, X } from "lucide-react";
+import { Check, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Section } from "./section";
 
-type Column = {
-  era: string;
-  title: string;
-  points: { ok: boolean; text: string }[];
-  verdict: string;
-  highlight?: boolean;
-};
-
-const columns: Column[] = [
+const columns = [
   {
-    era: "The DM-and-Venmo era",
-    title: "Upfront-pay",
+    title: "Today",
+    subtitle: "In the app now",
     points: [
-      { ok: false, text: "Brand pays 100% before work" },
-      { ok: false, text: "Creator may underdeliver" },
-      { ok: false, text: "No accountability" },
-      { ok: false, text: "Disputes = direct conflict" },
+      "Milestones on every contract",
+      "Creators submit links and notes",
+      "Brands approve or request changes",
+      "Full audit trail per campaign",
     ],
-    verdict: "Bad for brands.",
-  },
-  {
-    era: "The agency standard",
-    title: "Net-30 invoicing",
-    points: [
-      { ok: false, text: "Creator delivers, then waits" },
-      { ok: false, text: "30–90 day payment delays" },
-      { ok: false, text: "Late payments are normal" },
-      { ok: false, text: "Cash flow killer" },
-    ],
-    verdict: "Bad for creators.",
-  },
-  {
-    era: "The Zentron way",
-    title: "Milestone escrow",
-    points: [
-      { ok: true, text: "Fee escrowed at signing" },
-      { ok: true, text: "Released per milestone" },
-      { ok: true, text: "Avg release: under 48h" },
-      { ok: true, text: "In-platform disputes" },
-    ],
-    verdict: "Built for both sides.",
+    footer: "Milestone tracking is live.",
     highlight: true,
+  },
+  {
+    title: "Spreadsheets & email",
+    subtitle: "What most teams use",
+    points: [
+      "Deliverables in shared folders",
+      "Approval over WhatsApp or Slack",
+      "No version history",
+      "Disputes become he-said-she-said",
+    ],
+    footer: "Hard to scale past a few creators.",
+  },
+  {
+    title: "Coming next",
+    subtitle: "On the roadmap",
+    points: [
+      "Escrow at contract signing",
+      "Release per approved milestone",
+      "In-platform dispute flow",
+      "Payout rails via Stripe",
+    ],
+    footer: "Tracked milestones today; money movement next.",
   },
 ];
 
 export function Escrow() {
   return (
-    <Section
-      id="escrow"
-      eyebrow={{ number: "05", label: "Payment infrastructure" }}
-      className="bg-surface/40"
-    >
+    <Section id="milestones" eyebrow="Milestones">
       <div className="grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:items-end">
         <h2 className="font-display text-4xl leading-[1.1] text-balance text-ink sm:text-5xl">
-          Payment that{" "}
-          <span className="italic text-brand">moves with the work.</span>
+          Deliverables tied to{" "}
+          <span className="italic text-brand">clear checkpoints.</span>
         </h2>
         <p className="max-w-2xl text-base leading-relaxed text-pretty text-muted-foreground">
-          Both upfront pay and net-30 are broken in different directions. Escrow
-          tied to milestones is the only model where the incentives line up on
-          both sides from day one.
+          Every contract breaks work into milestones. Creators submit proof;
+          brands approve in the dashboard. Payment escrow connects to those
+          same checkpoints — shipping after milestone tracking is proven in
+          production.
         </p>
       </div>
 
-      <div className="mt-14 grid gap-4 md:grid-cols-3">
+      <div className="mt-12 grid gap-4 md:grid-cols-3">
         {columns.map((col) => (
           <div
             key={col.title}
             className={cn(
-              "group relative flex flex-col gap-5 overflow-hidden rounded-2xl p-7 transition-all duration-300",
+              "group relative flex flex-col gap-5 overflow-hidden rounded-2xl p-7",
               col.highlight
-                ? "bg-ink text-paper ring-1 ring-ink shadow-[0_24px_60px_-24px_oklch(0.18_0.01_60_/_0.35)]"
+                ? "bg-ink text-paper ring-1 ring-ink"
                 : "bg-card text-ink ring-1 ring-border",
             )}
           >
@@ -88,7 +77,7 @@ export function Escrow() {
                   col.highlight ? "text-paper/60" : "text-muted-foreground",
                 )}
               >
-                {col.era}
+                {col.subtitle}
               </p>
               <h3
                 className={cn(
@@ -100,9 +89,9 @@ export function Escrow() {
               </h3>
             </div>
             <ul className="flex flex-col gap-2">
-              {col.points.map((p) => (
+              {col.points.map((text) => (
                 <li
-                  key={p.text}
+                  key={text}
                   className={cn(
                     "flex items-start gap-2 text-sm",
                     col.highlight ? "text-paper/85" : "text-muted-foreground",
@@ -111,30 +100,28 @@ export function Escrow() {
                   <span
                     className={cn(
                       "mt-0.5 inline-flex size-4 shrink-0 items-center justify-center rounded-full",
-                      p.ok
-                        ? "bg-brand/15 text-brand"
-                        : col.highlight
-                          ? "bg-paper/10 text-paper/70"
-                          : "bg-surface text-muted-foreground",
+                      col.highlight
+                        ? "bg-brand/20 text-brand"
+                        : "bg-surface text-muted-foreground",
                     )}
                   >
-                    {p.ok ? (
+                    {col.highlight ? (
                       <Check className="size-2.5" strokeWidth={3} />
                     ) : (
-                      <X className="size-2.5" strokeWidth={3} />
+                      <Clock className="size-2.5" strokeWidth={2} />
                     )}
                   </span>
-                  <span>{p.text}</span>
+                  <span>{text}</span>
                 </li>
               ))}
             </ul>
             <p
               className={cn(
-                "mt-auto pt-3 text-sm italic",
-                col.highlight ? "text-brand" : "text-muted-foreground/80",
+                "mt-auto pt-2 text-sm",
+                col.highlight ? "text-brand" : "text-muted-foreground",
               )}
             >
-              {col.verdict}
+              {col.footer}
             </p>
           </div>
         ))}
